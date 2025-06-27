@@ -10,6 +10,7 @@ from typing import List, Tuple, Dict, Any
 from collections import defaultdict
 import asyncio
 import json
+import logging
 
 
 
@@ -28,7 +29,6 @@ class SQLitePreprocessor:
         self.mapping_path = os.path.join(self.DB_folder, "mapping_all.pkl")
         self.inverted_index_path = os.path.join(self.DB_folder, "inverted_index.pkl")
         self.embedding_deployment = embedding_deployment
-        
         self.schema_file = os.path.join(self.DB_folder, "schema.json")
 
 

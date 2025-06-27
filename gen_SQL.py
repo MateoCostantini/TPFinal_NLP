@@ -128,24 +128,24 @@ class NLToSQLService:
         return sql
     
 
-    def generate_sql_with_embedded_variants(self, question: str) -> List[str]:
+    def generate_sql_with_embedded_variants(self, question: str) -> str:
         """
         1 Genera SQL base
         2 Si es válida, parsea usando sqlglot para extraer todas las comparaciones de literales
         3 Para cada (tabla, columna, literal) usa FAISS para encontrar variantes
         4 Genera variantes reemplazando cada literal por alternativas FAISS
-        5 Devuelve lista: [original, variante1, variante2, ...]
+        5 Devuelve string con la query SQL.
         """
         sql = self.generate_sql(question)
 
         if sql.lower() == "select 'not available';":
-            return [sql]
+            return sql
 
         try:
             parsed = sqlglot.parse_one(sql)
         except Exception as e:
             print(f"SQL parse error: {e}")
-            return [sql]
+            return sql
 
         # 1 Resuelve alias -> tabla real
         alias_to_table = {}
@@ -171,7 +171,7 @@ class NLToSQLService:
 
         # No literales -> solo devuelve original
         if not replacements:
-            return [sql]
+            return sql
         #print(replacements) 
         # 3 Busca variantes FAISS por cada literal
         replacements_map = {}  # val -> [alt1, alt2, ...]

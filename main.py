@@ -6,6 +6,8 @@ from faiss_runtime import SQLiteFAISSRuntime
 from gen_SQL import NLToSQLService
 from SQL_runner import SQLExecutor
 from table_to_NL import TableAnswerer
+from classifier import ClassifierService
+from modifier_SQL import SQLModifierModel
 
 #================= MUY BUENO ESTO PARA CORRERLO POR COMANDO:
 # if __name__ == "__main__":
@@ -63,6 +65,15 @@ class Tablon:
             embedding_deployment=self.deployment_embeddings
         )
 
+        # ================= Modelo Clasificador ========================
+        self.classifier_service = ClassifierService(
+            db_path=self.db_path,
+            azure_api_key=self.azure_api_key_model,
+            azure_api_endpoint=self.azure_api_endpoint_model,
+            azure_api_version=self.azure_api_version_model,
+            deployment=self.deployment_model
+        )
+
         # ================= Modelo GEN SQL =============================
         self.gen_SQL_service = NLToSQLService(
             db_path=self.db_path,
@@ -71,6 +82,15 @@ class Tablon:
             azure_api_version=self.azure_api_version_model,
             deployment=self.deployment_model,
             faiss_runtime=self.runtime_FAISS
+        )
+
+        # ================= Modelo Modificador SQL =====================
+        self.modifier_SQL_service = SQLModifierModel(
+            db_path=self.db_path,
+            azure_api_key=self.azure_api_key_model,
+            azure_api_endpoint=self.azure_api_endpoint_model,
+            azure_api_version=self.azure_api_version_model,
+            deployment=self.deployment_model
         )
 
         # =================  SQL executor =============================
@@ -95,22 +115,35 @@ class Tablon:
         self.preprocessor.create_scheme()  
 
     def answer(self, question):
-        
 
-        sql = self.gen_SQL_service.generate_sql_with_embedded_variants(question)
-        print("Final sql: ", sql)
-        
+        # 1. Clasificar la consulta
+        category = self.classifier_service.classify_query(question)
 
-        # if sql.lower() == "select 'not available';":
-        #     print("Sorry, I couldn't generate a valid SQL query for your question.")
+        if category == "observes_database":
+            sql = self.gen_SQL_service.generate_sql_with_embedded_variants(question)
+
+            print("Final sql: ", sql)
+
+            # if sql.lower() == "select 'not available';":
+            #     print("Sorry, I couldn't generate a valid SQL query for your question.")
+
+            execution = self.executor.execute_query(sql)
+
+            # if category == "modifies_database":
+            #     # Log all the undo SQL query in an undo.log file, making sure to create the file if it doesn't exist.
+            #     with open("undo.log", "a") as f:
+            #         f.write(f"Undo SQL for question '{question}': {undo_sql}\n")
+
+            tabla = execution['sql']
+            print(tabla)
+
+            resp = self.answerer.answer(question, tabla)
+            print("Answer: ", resp)
 
 
-        execution = self.executor.execute_query(sql)
-        tabla = execution['sql']
-        print(tabla)
-
-        resp = self.answerer.answer(question, tabla)
-        print("Answer: ", resp)
+        elif category == "modifies_database":
+            sql, undo_sql = self.modifier_SQL_service.generate_sql(question)
+            execution = self.executor.execute_query(sql)
 
 
 
@@ -213,7 +246,7 @@ class Tablon:
 
 
 tablon = Tablon(
-    db_path= "database/sakila-sqlite3/sakila_master.db", #args.db ,
+    db_path= "database/chinook/chinook.db", #args.db ,
     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
     azure_api_version_embeddings="2023-12-01-preview",
@@ -222,7 +255,7 @@ tablon = Tablon(
     azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
     azure_api_version_model="2023-12-01-preview",
     deployment_model="gpt-4o-mini-tute",
-    preprocess = True
+    preprocess = False
     )
 
 
