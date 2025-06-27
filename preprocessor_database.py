@@ -134,6 +134,7 @@ class SQLitePreprocessor:
 
                 columns = [{"name": c[1], "type": c[2]} for c in cols]
                 primary_keys = [c[1] for c in cols if c[5] != 0]
+                nullable = [c[1] for c in cols if c[3] == 0]
 
                 cur.execute(f"SELECT * FROM {tbl} LIMIT 1;")
                 row = cur.fetchone()
@@ -145,6 +146,7 @@ class SQLitePreprocessor:
                 report["tables"][tbl] = {
                     "columns": columns,
                     "primary_keys": primary_keys,
+                    "nullable_columns": nullable,
                     "sample_row": sample
                 }
         
