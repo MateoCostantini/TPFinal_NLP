@@ -27,6 +27,7 @@ class Tablon:
         azure_api_endpoint_model: str,
         azure_api_version_model: str,
         deployment_model: str,
+        preprocess = False
 
     ):
         self.db_path = db_path
@@ -48,6 +49,10 @@ class Tablon:
             azure_api_version=self.azure_api_version_embeddings,
             embedding_deployment=self.deployment_embeddings
         )   
+
+        if preprocess:
+            self.preprocessor.run()  
+            self.preprocessor.create_scheme()
         
         # ===  Consultar (Busca reemplazos mas cercanos (RAG)) ===
         self.runtime_FAISS = SQLiteFAISSRuntime(
@@ -217,13 +222,14 @@ tablon = Tablon(
     azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
     azure_api_version_model="2023-12-01-preview",
     deployment_model="gpt-4o-mini-tute",
+    preprocess = True
     )
 
 
 while True:
     #question = "give me the name, surname and andress that have this email: Mike.Hillyer@sakilastaff.com"
     # quersion2 = "how many horror movies are there?"
-    # 
+     
     question = input("-> ")
     if question.lower() == "q":
         break
