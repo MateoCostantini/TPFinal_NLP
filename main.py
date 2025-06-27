@@ -1,6 +1,8 @@
 import os
 import json
 import argparse
+import logging
+
 from preprocessor_database import SQLitePreprocessor
 from faiss_runtime import SQLiteFAISSRuntime
 from gen_SQL import NLToSQLService
@@ -51,6 +53,8 @@ class Tablon:
             azure_api_version=self.azure_api_version_embeddings,
             embedding_deployment=self.deployment_embeddings
         )   
+
+        self.preprocessor.create_log_file()
 
         if preprocess:
             self.preprocessor.run()  
@@ -129,112 +133,25 @@ class Tablon:
 
             execution = self.executor.execute_query(sql)
 
-            # if category == "modifies_database":
-            #     # Log all the undo SQL query in an undo.log file, making sure to create the file if it doesn't exist.
-            #     with open("undo.log", "a") as f:
-            #         f.write(f"Undo SQL for question '{question}': {undo_sql}\n")
+            
 
             tabla = execution['sql']
             print(tabla)
 
-            resp = self.answerer.answer(question, tabla)
+            resp = self.answerer.answer(question, sql, tabla)
             print("Answer: ", resp)
 
 
         elif category == "modifies_database":
             sql, undo_sql = self.modifier_SQL_service.generate_sql(question)
+            print("sql: ", sql)
+            print("undo_sql: ", undo_sql)
             execution = self.executor.execute_query(sql)
+            print("result: ",execution)
+            if execution["error"] == None:
+                self.preprocessor.log_db_action(sql, undo_sql)
 
 
-
-
-        
-
-
-
-
-
-
-
-
-# # ===  Preprocesar ===
-# preprocessor = SQLitePreprocessor(
-#     sqlite_path="database/sakila-sqlite3/sakila_master.db", #args.db
-#     azure_api_key="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-#     azure_api_base="https://mateo-openai.openai.azure.com/",
-#     azure_api_version="2023-12-01-preview",
-#     embedding_deployment="text-embedding-3-small-tablon"
-# )
-
-# def preprocess():
-#     # Hay que correrlo solo una vez (Ya corrido)
-#     preprocessor.run()  
-#     preprocessor.create_scheme()  
-
-# #preprocess()
-
-
-# # ===  Consultar (Busca reemplazos mas cercanos (RAG)) ===
-# runtime = SQLiteFAISSRuntime(
-#     DB_folder = os.path.dirname("database/sakila-sqlite3/sakila_master.db"),
-#     azure_api_key="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-#     azure_api_base="https://mateo-openai.openai.azure.com/",
-#     azure_api_version="2023-12-01-preview",
-#     embedding_deployment="text-embedding-3-small-tablon"
-# )
-
-# # ================= Modelo GEN SQL =============================
-
-# service = NLToSQLService(
-#         db_path="database/sakila-sqlite3/sakila_master.db", #args.db
-#         azure_api_key="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-#         azure_api_endpoint="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-#         azure_api_version="2023-12-01-preview",
-#         deployment="gpt-4o-mini-tute",
-#         faiss_runtime=runtime
-#     )
-
-# # =================  SQL executor =============================
-
-# executor = SQLExecutor(
-#     db_path = "database/sakila-sqlite3/sakila_master.db" #args.db
-#     )
-
-
-# # ================ Answer back to user =====================
-# answerer = TableAnswerer(
-#         azure_api_key="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-#         azure_api_endpoint="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-#         azure_api_version="2023-12-01-preview", 
-#         deployment="gpt-4o-mini-tute")
-
-
-
-
-
-# while True:
-#     #question = "give me the name, surname and andress that have this email: Mike.Hillyer@sakilastaff.com"
-#     # quersion2 = "how many horror movies are there?"
-#     # 
-#     question = input("-> ")
-#     if question.lower() == "q":
-#         break
-#     print("")
-
-#     sql = service.generate_sql_with_embedded_variants(question)
-#     print("Final sql: ", sql)
-    
-
-#     # if sql.lower() == "select 'not available';":
-#     #     print("Sorry, I couldn't generate a valid SQL query for your question.")
-
-
-#     execution = executor.execute_query(sql)
-#     tabla = execution['sql']
-#     print(tabla)
-
-#     resp = answerer.answer(question, tabla)
-#     print("Answer: ", resp)
 
 
 ##### Ver caso de que la tabla sea excesivamente larga y haya qeu recortarla.
@@ -246,7 +163,7 @@ class Tablon:
 
 
 tablon = Tablon(
-    db_path= "database/chinook/chinook.db", #args.db ,
+    db_path= "database\sakila_database\sakila_master.db", #args.db ,
     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
     azure_api_version_embeddings="2023-12-01-preview",
@@ -262,9 +179,9 @@ tablon = Tablon(
 while True:
     #question = "give me the name, surname and andress that have this email: Mike.Hillyer@sakilastaff.com"
     # quersion2 = "how many horror movies are there?"
-     
+    print("")
     question = input("-> ")
-    if question.lower() == "q":
+    if question.lower() in ["q", "quit"]:
         break
     print("")
 

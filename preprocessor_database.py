@@ -30,6 +30,7 @@ class SQLitePreprocessor:
         self.inverted_index_path = os.path.join(self.DB_folder, "inverted_index.pkl")
         self.embedding_deployment = embedding_deployment
         self.schema_file = os.path.join(self.DB_folder, "schema.json")
+        self.log_file = os.path.join(self.DB_folder, "db_actions.log")
 
 
         # Azure OpenAI setup
@@ -114,6 +115,27 @@ class SQLitePreprocessor:
             self.save_all(index, mapping, inverted_index)
         finally:
             conn.close()
+
+    
+    def create_log_file(self):
+
+        self.logger = logging.getLogger('sql_logger')  # Logger exclusivo
+        self.logger.setLevel(logging.INFO)
+
+        # Evitá duplicar handlers si se crea múltiples veces
+        if not self.logger.hasHandlers():
+            file_handler = logging.FileHandler(self.log_file)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+
+
+    def log_db_action(self, applied_query: str, rollback_query: str):
+        self.logger.info("[APPLY] %s", applied_query.strip())
+        self.logger.info("[ROLLBACK] %s", rollback_query.strip())
+        self.logger.info("-" * 40)
+
+
 
 
 

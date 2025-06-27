@@ -93,7 +93,8 @@ class NLToSQLService:
             "The query must be syntactically correct."
             "If the question cannot be answered directly with the given tables, return an empty SELECT: SELECT 'Not available';"
             "The answer must be quick, efficient, and as direct as possible."
-            "Correctly consider which fields from the database the user needs and also include information that could be useful."
+            #"Correctly consider which fields from the database the user needs and also include information that could be useful."
+            "Ensure to show the columns that the user is asking for and additionaly, every column that you are using to compare with (==, LIKE, etc.) in the query."
             "Ensure that rows are not duplicated."
             "Use descriptive names for the generated columns."
             #"Always include all columns from the tables used in the query. Especially include ALL columns from each table you join or query."
@@ -147,15 +148,19 @@ class NLToSQLService:
             print(f"SQL parse error: {e}")
             return sql
 
-        # 1 Resuelve alias -> tabla real
+        # 1. Resuelve alias -> tabla real
         alias_to_table = {}
+        default_table = None
+
         for table in parsed.find_all(exp.Table):
             if table.alias:
                 alias_to_table[table.alias] = table.name
+                default_table = table.alias
             else:
                 alias_to_table[table.name] = table.name
+                default_table = table.name
 
-        # 2 Encuentra comparaciones con literales
+        # 2. Encuentra comparaciones con literales
         replacements = []  # List[(original_literal, (table, column, value))]
         for where in parsed.find_all(exp.Where):
             for pred in where.find_all(exp.Predicate):
@@ -164,7 +169,7 @@ class NLToSQLService:
                     right = pred.right
                     if isinstance(right, exp.Literal) and isinstance(left, exp.Column):
                         col = left.name
-                        tbl_or_alias = left.table
+                        tbl_or_alias = left.table or default_table  # 👈 usa default si no hay tabla
                         tbl = alias_to_table.get(tbl_or_alias, tbl_or_alias)
                         val = right.this
                         replacements.append((val, (tbl, col, val)))
@@ -172,7 +177,7 @@ class NLToSQLService:
         # No literales -> solo devuelve original
         if not replacements:
             return sql
-        #print(replacements) 
+        print(replacements) 
         # 3 Busca variantes FAISS por cada literal
         replacements_map = {}  # val -> [alt1, alt2, ...]
         for val, (table, column, _) in replacements:
@@ -181,8 +186,9 @@ class NLToSQLService:
                 table=table,
                 column=column,
                 k=3,
-                threshold=0.65
+                threshold=0.55
             )
+            print(f"faiss busca por: {val.strip('%')} en {table}.{column}")
             print(hits)
             alt_texts = [h[2][2] for h in hits if h[2][2] != val]
             if alt_texts:
@@ -198,6 +204,9 @@ class NLToSQLService:
                     replaced = base.replace(f"'{val}'", f"'{alt}'")
                     new_variants.append(replaced)
             variants.extend(new_variants)
+        
+        if len(variants) > 1:
+            variants.pop(0)
 
         # Quita duplicados
         variants = list(dict.fromkeys(variants))

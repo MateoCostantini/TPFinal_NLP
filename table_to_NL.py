@@ -19,7 +19,7 @@ class TableAnswerer:
         self.client = azure_client
         self.model = deployment
 
-    def answer(self, question: str, rows: List[Dict[str, Any]]) -> str:
+    def answer(self, question: str, sql_query:str, rows: List[Dict[str, Any]]) -> str:
         if not rows:
             return "I couldn't find any information to answer your question."
 
@@ -27,9 +27,10 @@ class TableAnswerer:
         system_prompt = (
             "You are a helpful assistant. You are given a user's question and the preview of the SQL result table."
             "A previous model has already preprocessed the user's message and built a table with all the information you need to respond. The table will be delivered to you."
+            f"\n The SQL Query made was de following:\n {sql_query}"
             "The table will be provided for context. The structure will be clear, including column names and their values."
             "Answer the question in a clear, short, natural language answer, summarizing the table content. "
-            "If possible, highlight key numbers, names, or insights."
+            #"If possible, highlight key numbers, names, or insights."
             
         )
         user_prompt = (
