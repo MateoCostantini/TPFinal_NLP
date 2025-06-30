@@ -10,6 +10,7 @@ from SQL_runner import SQLExecutor
 from table_to_NL import TableAnswerer
 from classifier import ClassifierService
 from modifier_SQL import SQLModifierModel
+from evaluator import Evaluator
 
 #================= MUY BUENO ESTO PARA CORRERLO POR COMANDO:
 # if __name__ == "__main__":
@@ -98,7 +99,6 @@ class Tablon:
         )
 
         # =================  SQL executor =============================
-
         self.executor = SQLExecutor(
             db_path = self.db_path
         )
@@ -109,6 +109,16 @@ class Tablon:
         azure_api_endpoint=self.azure_api_endpoint_model,
         azure_api_version=self.azure_api_version_model, 
         deployment=self.deployment_model
+        )
+
+        # ================ Evaluación del modelo =====================
+        self.evaluator = Evaluator(
+            db_path=self.db_path,
+            azure_api_key=self.azure_api_key_model,
+            azure_api_endpoint=self.azure_api_endpoint_model,
+            azure_api_version=self.azure_api_version_model,
+            deployment=self.deployment_model,
+            faiss_runtime=self.runtime_FAISS
         )
 
 
@@ -133,8 +143,6 @@ class Tablon:
 
             execution = self.executor.execute_query(sql)
 
-            
-
             tabla = execution['sql']
             print(tabla)
 
@@ -151,6 +159,20 @@ class Tablon:
             if execution["error"] == None:
                 self.preprocessor.log_db_action(sql, undo_sql)
 
+    def evaluate(self, n):
+        all_avgs = []
+        for i in range(n):
+            resultados = self.evaluator.evaluar_modelo_sql(
+                modelo_generador=self.gen_SQL_service.generate_sql,
+                N=20  # o cualquier número de ejemplos que quieras evaluar
+            )
+            # Imprime o devuelve los resultados de forma resumida o detallada
+            avg_sim = sum(r["similitud"] for r in resultados) / len(resultados)
+            all_avgs.append(avg_sim)
+            print(f"Similitud promedio en iteración {i+1}: {avg_sim:.2f}")
+        print(f"\n✅ Similitud promedio general: {sum(all_avgs) / len(all_avgs):.2f}\n")
+
+
 
 
 
@@ -163,7 +185,7 @@ class Tablon:
 
 
 tablon = Tablon(
-    db_path= "database\sakila_database\sakila_master.db", #args.db ,
+    db_path= "database/chinook/chinook.db", #args.db ,
     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
     azure_api_version_embeddings="2023-12-01-preview",
@@ -183,6 +205,11 @@ while True:
     question = input("-> ")
     if question.lower() in ["q", "quit"]:
         break
+    elif question.lower() in ["eval", "evaluate"]:
+        n = int(input("How many iterations do you want to evaluate? "))
+        print("")
+        tablon.evaluate(n)
+    else:
+        print("")
+        tablon.answer(question)
     print("")
-
-    tablon.answer(question)
