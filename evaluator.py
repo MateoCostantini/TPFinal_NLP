@@ -10,54 +10,6 @@ import sqlglot
 from sqlglot import exp
 import difflib
 
-# async def modelo_sql_a_natural(dataBase_scheme: str, N: int):
-#     azure_client = AsyncAzureOpenAI(
-#         api_version=api_version,
-#         azure_endpoint=endpoint,
-#         api_key=subscription_key
-#     )
-#     client = instructor.from_openai(azure_client)
-
-#     class SQLconPregunta(BaseModel):
-#         sql: str = Field(description="La consulta SQL generada basada en el esquema de base de datos.")
-#         pregunta: str = Field(description="Una pregunta en lenguaje natural que podría haber hecho un usuario y que esta query responde.")
-
-#     system_prompt = (
-#         "Sos un generador de ejemplos de consultas SQL y sus traducciones a lenguaje natural en forma de pregunta.\n"
-#         "Vas a generar una consulta SQL sintácticamente correcta que tenga sentido con el siguiente esquema de base de datos y sus relaciones:\n\n"
-#         f"{dataBase_scheme}\n\n"
-#         "Y luego, vas a explicar qué hace esa consulta en una oración clara en español.\n"
-#         "IMPORTANTE:\n"
-#         "- La query debe ser útil, sintácticamente correcta y usar nombres reales de columnas y tablas.\n"
-#         "- La pregunta debe dar a entender con precisión qué busca obtener la query.\n"
-#         "- No agregues texto adicional, solo la SQL y su descripción."
-#         "EXTREMADAMENTE IMPORTANTE:\n"
-#         "- Las queries deben ser distintas entre sí. Es decir, no generes queries que ya has generado en una iteración anterior.\n"
-#         "- Además de variar las queries, haz lo posible para usar distintas tablas y/o atributos en las queries que vas generando.\n"
-#         "- Para ayudarte con esto, intenta recurrir a usar atributos que crees 'poco comunes' o 'poco populares'."
-#     )
-
-#     resultados = []
-
-#     for _ in range(N):
-#         res = await client.chat.completions.create(
-#             model=deployment,
-#             messages=[
-#                 {"role": "system", "content": system_prompt},
-#                 {"role": "user", "content": "Generá una consulta SQL válida con su correspondiente pregunta en lenguaje natural."}
-#             ],
-#             response_model=SQLconPregunta
-#         )
-
-#         resultados.append(res.model_dump())
-
-#     return resultados
-
-
-
-# Quiero armar el modelo evaluador de arriba siguiendo el formato de gen_SQL.py
-
-
 class SQLconPregunta(BaseModel):
     sql: str = Field(description="The SQL query generated based on the database schema.")
     pregunta: str = Field(description="A natural language question that the randomly generated SQL query answers.")
