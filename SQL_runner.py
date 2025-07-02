@@ -24,7 +24,7 @@ class SQLExecutor:
                     result = []
                     print("Operación realizada correctamente ")
 
-                    resp = {"sql": result, "status": "modify" ,"error":None}
+                    resp = {"sql": result, "status": "modified" ,"error":None}
 
 
         except Exception as e:

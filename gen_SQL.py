@@ -81,7 +81,10 @@ class NLToSQLService:
         return sql
         
 
-    def generate_sql(self, question: str) -> str:
+    def generate_sql(self, user_question, conversation = None) -> str:
+        # if conversation == None:
+        #     conversation = []
+
         schema_repr = json.dumps(self.schema, indent=2, ensure_ascii=False)
         prompt = (
             "You are an SQL expert managing a database for SQLite and you will assist by generating a query."
@@ -92,7 +95,7 @@ class NLToSQLService:
             "ONLY return the SQL query (no explanations, no markdown, no extra text)."
             "The query must be syntactically correct."
             "If the question cannot be answered directly with the given tables, return an empty SELECT: SELECT 'Not available';"
-            "BUT: If the user asks a general question about what can be queried or about the structure of the database, return a sample query showing a few representative tables and columns."
+            #"BUT: If the user asks a general question about what can be queried or about the structure of the database, return a sample query showing a few representative tables and columns."
             "The answer must be quick, efficient, and as direct as possible."
             #"Correctly consider which fields from the database the user needs and also include information that could be useful."
             "Ensure to show the columns that the user is asking for and additionaly, every column that you are using to compare with (==, LIKE, etc.) in the query."
@@ -103,34 +106,39 @@ class NLToSQLService:
             "\nBelow I will provide you with the tables and their relationships:\n\n" + schema_repr
         )
 
-        #if prev_error != None:
-        user_question = (
-            f"Question: {question}\n\n"
-            "Return only the corresponding SQL query (without explanations)."
-        )
-        # else:
-        #     user_question = (
-        #         f"Question: {question}\n\n"
-        #         f"Have this error: {prev_error}\n\n"
-        #         "Return only the corresponding SQL query (without explanations)."
-        #     )
+        # user_question = (
+        #     f"Question: {question}\n\n"
+        #     "Return only the corresponding SQL query (without explanations)."
+        # )
+     
 
-
-        resp = self.client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": user_question}
-            ],
-            model=self.model,
-            max_tokens=512,
-            temperature=0.0,
-            response_model=SQLResponse,
-        )
+        if conversation == None:
+            resp = self.client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": prompt},
+                    {"role": "user", "content": user_question}
+                ] ,
+                model=self.model,
+                max_tokens=512,
+                temperature=0.0,
+                response_model=SQLResponse,
+            )
+        else:
+            resp = self.client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": prompt}
+                    #{"role": "user", "content": user_question}
+                ] + conversation,
+                model=self.model,
+                max_tokens=512,
+                temperature=0.0,
+                response_model=SQLResponse,
+            )
         sql = resp.SQL
         return sql
     
 
-    def generate_sql_with_embedded_variants(self, question: str) -> str:
+    def generate_sql_with_embedded_variants(self, question: str, conversation = None) -> str:
         """
         1 Genera SQL base
         2 Si es válida, parsea usando sqlglot para extraer todas las comparaciones de literales
@@ -138,7 +146,10 @@ class NLToSQLService:
         4 Genera variantes reemplazando cada literal por alternativas FAISS
         5 Devuelve string con la query SQL.
         """
-        sql = self.generate_sql(question)
+        if conversation == None:
+            sql = self.generate_sql(question)
+        else:
+            sql = self.generate_sql(question, conversation)
 
         if sql.lower() == "select 'not available';":
             return sql

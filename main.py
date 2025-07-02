@@ -35,7 +35,7 @@ class Tablon:
         preprocess = False
 
     ):
-        #self.conversation_history = []  
+        self.conversation_history = []  
         self.db_path = db_path
         self.DB_folder = os.path.dirname(db_path)
         self.azure_api_key_embeddings = azure_api_key_embeddings
@@ -130,12 +130,19 @@ class Tablon:
         self.preprocessor.create_scheme()  
 
     def answer(self, question):
-
+        self.conversation_history.append({"role": "user", "content": question})
+        self.conversation_history = self.conversation_history[-12:]  
         # 1. Clasificar la consulta
         category = self.classifier_service.classify_query(question)
 
         if category == "observes_database":
-            sql = self.gen_SQL_service.generate_sql_with_embedded_variants(question)
+            sql = self.gen_SQL_service.generate_sql_with_embedded_variants(
+                question=question,
+                conversation = self.conversation_history[-12:]
+                )
+
+            self.conversation_history.append({"role": "assistant", "content": sql})
+            self.conversation_history = self.conversation_history[-12:]
 
             print("Final sql: ", sql)
 
@@ -149,16 +156,25 @@ class Tablon:
 
             resp = self.answerer.answer(question, sql, tabla)
             print("Answer: ", resp)
+            self.conversation_history.append({"role": "assistant", "content": resp})
+            self.conversation_history = self.conversation_history[-12:]
 
 
         elif category == "modifies_database":
             sql, undo_sql = self.modifier_SQL_service.generate_sql(question)
+
+            self.conversation_history.append({"role": "assistant", "content": sql})
+            self.conversation_history = self.conversation_history[-12:]
+
             print("sql: ", sql)
             print("undo_sql: ", undo_sql)
             execution = self.executor.execute_query(sql)
             print("result: ",execution)
             if execution["error"] == None:
                 self.preprocessor.log_db_action(sql, undo_sql)
+            
+            self.conversation_history.append({"role": "assistant", "content": f'{execution["status"]}: error {execution["error"]}'})
+            self.conversation_history = self.conversation_history[-12:]
 
     def evaluate(self):       
         resultados = self.evaluator.evaluar_modelo_sql(
