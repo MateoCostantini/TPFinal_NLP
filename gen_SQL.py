@@ -92,6 +92,7 @@ class NLToSQLService:
             "ONLY return the SQL query (no explanations, no markdown, no extra text)."
             "The query must be syntactically correct."
             "If the question cannot be answered directly with the given tables, return an empty SELECT: SELECT 'Not available';"
+            "BUT: If the user asks a general question about what can be queried or about the structure of the database, return a sample query showing a few representative tables and columns."
             "The answer must be quick, efficient, and as direct as possible."
             #"Correctly consider which fields from the database the user needs and also include information that could be useful."
             "Ensure to show the columns that the user is asking for and additionaly, every column that you are using to compare with (==, LIKE, etc.) in the query."
@@ -177,7 +178,7 @@ class NLToSQLService:
         # No literales -> solo devuelve original
         if not replacements:
             return sql
-        print(replacements) 
+        #print(replacements) 
         # 3 Busca variantes FAISS por cada literal
         replacements_map = {}  # val -> [alt1, alt2, ...]
         for val, (table, column, _) in replacements:
@@ -188,8 +189,8 @@ class NLToSQLService:
                 k=3,
                 threshold=0.55
             )
-            print(f"faiss busca por: {val.strip('%')} en {table}.{column}")
-            print(hits)
+            #print(f"faiss busca por: {val.strip('%')} en {table}.{column}")
+            #print(hits)
             alt_texts = [h[2][2] for h in hits if h[2][2] != val]
             if alt_texts:
                 replacements_map[val] = alt_texts

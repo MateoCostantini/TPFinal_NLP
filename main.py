@@ -35,6 +35,7 @@ class Tablon:
         preprocess = False
 
     ):
+        #self.conversation_history = []  
         self.db_path = db_path
         self.DB_folder = os.path.dirname(db_path)
         self.azure_api_key_embeddings = azure_api_key_embeddings
@@ -113,7 +114,7 @@ class Tablon:
 
         # ================ Evaluación del modelo =====================
         self.evaluator = Evaluator(
-            db_path=self.db_path,
+            db_path="database\sakila_database\sakila_master.db",
             azure_api_key=self.azure_api_key_model,
             azure_api_endpoint=self.azure_api_endpoint_model,
             azure_api_version=self.azure_api_version_model,
@@ -159,18 +160,13 @@ class Tablon:
             if execution["error"] == None:
                 self.preprocessor.log_db_action(sql, undo_sql)
 
-    def evaluate(self, n):
-        all_avgs = []
-        for i in range(n):
-            resultados = self.evaluator.evaluar_modelo_sql(
-                modelo_generador=self.gen_SQL_service.generate_sql,
-                N=20  # o cualquier número de ejemplos que quieras evaluar
-            )
-            # Imprime o devuelve los resultados de forma resumida o detallada
-            avg_sim = sum(r["similitud"] for r in resultados) / len(resultados)
-            all_avgs.append(avg_sim)
-            print(f"Similitud promedio en iteración {i+1}: {avg_sim:.2f}")
-        print(f"\n✅ Similitud promedio general: {sum(all_avgs) / len(all_avgs):.2f}\n")
+    def evaluate(self):       
+        resultados = self.evaluator.evaluar_modelo_sql(
+            modelo_generador=self.gen_SQL_service)
+        
+        # Imprime o devuelve los resultados de forma resumida o detallada
+        avg_sim = sum(r["similitud"] for r in resultados) / len(resultados)
+        print(f"Similitud promedio en iteración : {avg_sim:.2f}")
 
 
 
@@ -184,32 +180,101 @@ class Tablon:
 
 
 
-tablon = Tablon(
-    db_path= "database/chinook/chinook.db", #args.db ,
-    azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-    azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
-    azure_api_version_embeddings="2023-12-01-preview",
-    deployment_embeddings="text-embedding-3-small-tablon",
-    azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-    azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-    azure_api_version_model="2023-12-01-preview",
-    deployment_model="gpt-4o-mini-tute",
-    preprocess = False
-    )
+
+# tablon = Tablon(
+#     db_path= "database\sakila_database\sakila_master.db", #args.db , (si hace evaluacion tiene que ser database\sakila_database\sakila_master.db sino args.db)
+#     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
+#     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
+#     azure_api_version_embeddings="2023-12-01-preview",
+#     deployment_embeddings="text-embedding-3-small-tablon",
+#     azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
+#     azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
+#     azure_api_version_model="2023-12-01-preview",
+#     deployment_model="gpt-4o-mini-tute",
+#     preprocess = False ## conseguir de args.p
+#     )
 
 
-while True:
-    #question = "give me the name, surname and andress that have this email: Mike.Hillyer@sakilastaff.com"
-    # quersion2 = "how many horror movies are there?"
-    print("")
-    question = input("-> ")
-    if question.lower() in ["q", "quit"]:
-        break
-    elif question.lower() in ["eval", "evaluate"]:
-        n = int(input("How many iterations do you want to evaluate? "))
-        print("")
-        tablon.evaluate(n)
+
+
+# while True:
+#     print("")
+#     question = input("-> ")
+#     if question.lower() in ["q", "quit"]:
+#         break
+#     elif question.lower() in ["eval", "evaluate"]:
+#         n = int(input("How many iterations do you want to evaluate? "))
+#         print("")
+#         tablon.evaluate(n)
+#     else:
+#         print("")
+#         tablon.answer(question)
+#     print("")
+
+
+
+# if __name__ == "__main__":
+#     import argparse
+#     parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite")
+#     parser.add_argument("--db", required=True, help="Ruta al archivo .db de entrada")
+#     args = parser.parse_args()
+
+def main():
+    parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite y evaluación del modelo.")
+    parser.add_argument("--db", help="Ruta al archivo .db de entrada (obligatorio si no se usa --eval)")
+    parser.add_argument("--preprocess", action="store_true", help="Si se incluye, realiza preprocesamiento del esquema")
+    parser.add_argument("--eval", action="store_true", help="Evalúa el modelo con el dataset predefinido")
+
+    args = parser.parse_args()
+
+    if args.eval:
+        print(" Ejecutando evaluación...")
+        tablon = Tablon(
+            db_path="database/sakila_database/sakila_master.db",  # ruta fija para evaluación
+            azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
+            azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
+            azure_api_version_embeddings="2023-12-01-preview",
+            deployment_embeddings="text-embedding-3-small-tablon",
+            azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
+            azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
+            azure_api_version_model="2023-12-01-preview",
+            deployment_model="gpt-4o-mini-tute",
+            preprocess=False  # no se requiere preprocesamiento en evaluación
+        )
+
+        tablon.evaluate()
+
     else:
-        print("")
-        tablon.answer(question)
-    print("")
+        if not args.db:
+            parser.error("El argumento --db es obligatorio si no se usa --eval")
+
+        print(f" Ejecutando sistema en modo interactivo con base: {args.db}")
+        tablon = Tablon(
+            db_path=args.db,
+            azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
+            azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
+            azure_api_version_embeddings="2023-12-01-preview",
+            deployment_embeddings="text-embedding-3-small-tablon",
+            azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
+            azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
+            azure_api_version_model="2023-12-01-preview",
+            deployment_model="gpt-4o-mini-tute",
+            preprocess=args.preprocess
+        )
+
+        while True:
+            print("")
+            question = input("-> ")
+            if question.lower() in ["q", "quit"]:
+                break
+            elif question.lower() in ["eval", "evaluate"]:
+                print("")
+                tablon.evaluate()
+            else:
+                print("")
+                tablon.answer(question)
+            print("")
+
+
+if __name__ == "__main__":
+    main()
