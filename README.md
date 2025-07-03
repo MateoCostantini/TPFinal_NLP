@@ -18,7 +18,7 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 
 1. Clonar el repositorio
   git clone https://github.com/MateoCostantini/TPFinal_NLP.git
-  cd TPFinal_NLP
+  \n cd TPFinal_NLP
 
 2. Instalar dependencias
   pip install -r requirements.txt
