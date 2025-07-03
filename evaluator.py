@@ -10,6 +10,8 @@ import sqlglot
 from sqlglot import exp
 import difflib
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class SQLconPregunta(BaseModel):
     sql: str = Field(description="The SQL query generated based on the database schema.")
@@ -164,3 +166,42 @@ class Evaluator:
 
 
         return resultados
+    
+    def mostrar_graficos(self, resultados):
+        df = pd.DataFrame(resultados)
+
+        # Histograma
+        plt.figure(figsize=(8, 5))
+        plt.hist(df["similitud"], bins=20, edgecolor="black")
+        plt.title("Distribución de Similitud entre SQL esperada y generada")
+        plt.xlabel("Similitud")
+        plt.ylabel("Cantidad de preguntas")
+        #plt.grid(True)
+        plt.show()
+
+        # Boxplot
+        plt.figure(figsize=(6, 4))
+        plt.boxplot(df["similitud"], vert=False)
+        plt.title("Boxplot de Similitud")
+        plt.xlabel("Similitud")
+        plt.grid(True)
+        plt.show()
+
+        # Scatter
+        plt.figure(figsize=(10, 5))
+        plt.scatter(range(len(df)), df["similitud"])
+        plt.title("Similitud por índice de pregunta")
+        plt.xlabel("Índice")
+        plt.ylabel("Similitud")
+        plt.grid(True)
+        plt.show()
+
+        # Casos problemáticos
+        peores = df.sort_values("similitud").head(5)
+        print("\n📉 PREGUNTAS CON MENOR SIMILITUD:")
+        for _, row in peores.iterrows():
+            print(f"\n❓ {row['pregunta']}")
+            print(f"✅ Esperada:  {row['sql_esperada']}")
+            print(f"🛠️ Generada: {row['sql_generada']}")
+            print(f"📊 Similitud: {row['similitud']:.2f}")
+

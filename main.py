@@ -170,6 +170,69 @@ class Tablon:
             self.conversation_history.append({"role": "assistant", "content": f'{execution["status"]}: error {execution["error"]}'})
             self.conversation_history = self.conversation_history[-12:]
 
+    def answer_with_retries(self, question: str, max_retries: int = 3):
+        self.conversation_history.append({"role": "user", "content": question})
+        self.conversation_history = self.conversation_history[-12:]
+
+        category = self.classifier_service.classify_query(question)
+
+        if category == "modifies_database":
+            sql, undo_sql = self.modifier_SQL_service.generate_sql(question)
+
+            self.conversation_history.append({"role": "assistant", "content": sql})
+            self.conversation_history = self.conversation_history[-12:]
+
+            print("sql: ", sql)
+            #print("undo_sql: ", undo_sql)
+            execution = self.executor.execute_query(sql)
+            #print("result: ",execution)
+            if execution["error"] == None:
+                self.preprocessor.log_db_action(sql, undo_sql)
+            
+            self.conversation_history.append({"role": "assistant", "content": f'{execution["status"]}: error {execution["error"]}'})
+            self.conversation_history = self.conversation_history[-12:]
+
+        if category == "observes_database":
+            attempt = 0
+            while attempt < max_retries:
+                attempt += 1
+                #print(f"\n Intento {attempt}...")
+
+                sql = self.gen_SQL_service.generate_sql_with_embedded_variants(
+                    question=question,
+                    conversation=self.conversation_history[-12:]
+                )
+
+                #print(" SQL generada:", sql)
+                self.conversation_history.append({"role": "assistant", "content": sql})
+                self.conversation_history = self.conversation_history[-12:]
+
+                execution = self.executor.execute_query(sql)
+                rows = execution["sql"]
+
+                if execution["error"] is not None:
+                    #print("❌ Error al ejecutar la query:", execution["error"])
+                    flag = False
+                    break
+                if len(rows) > 0 and not ("'Not available'" in rows[0]):
+                    flag = True
+                    break
+                else:
+                    print("⚠️ La query no devolvió resultados.")
+                    self.conversation_history.append({
+                        "role": "user",
+                        "content": "La última consulta SQL no devolvió resultados. Por favor, genera una consulta diferente que pueda recuperar datos."
+                    })
+                    self.conversation_history = self.conversation_history[-12:]
+                    flag = False
+            if not flag:
+                sql = "SELECT no disponible;"
+            resp = self.answerer.answer(question, sql, rows)
+            print("Respuesta:", resp)
+            self.conversation_history.append({"role": "assistant", "content": resp})
+            self.conversation_history = self.conversation_history[-12:]
+
+
     def evaluate(self):       
         resultados = self.evaluator.evaluar_modelo_sql(
             modelo_generador=self.gen_SQL_service)
@@ -177,6 +240,8 @@ class Tablon:
         # Imprime o devuelve los resultados de forma resumida o detallada
         avg_sim = sum(r["similitud"] for r in resultados) / len(resultados)
         print(f"Similitud promedio en iteración : {avg_sim:.2f}")
+
+        self.evaluator.mostrar_graficos(resultados)
 
 
 
@@ -188,8 +253,6 @@ class Tablon:
 #### dirigir el pipeline segun corresponda. (not available, status: error, tabla vacia, etc.)
 ##### en vez de que el que elige la mejor query reescriba la query podria capaz elegir el indice de la mejor y despues la agarro [indice]
 #### habria que actualizar el esquema cunado el modificador realiza un cambio.
-
-
 
 
 
@@ -216,7 +279,7 @@ def main():
             preprocess=False  # no se requiere preprocesamiento en evaluación
         )
         # tablon = Tablon(
-        #     db_path="database/sakila_database/sakila_master.db",  # ruta fija para evaluación
+        #     db_path="database/evaluator/sakila_master.db",  # ruta fija para evaluación
         #     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
         #     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
         #     azure_api_version_embeddings="2023-12-01-preview",
@@ -255,7 +318,7 @@ def main():
                 break
             else:
                 print("")
-                tablon.answer(question)
+                tablon.answer_with_retries(question)
             print("")
 
 

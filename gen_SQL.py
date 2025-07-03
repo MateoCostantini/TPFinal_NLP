@@ -106,11 +106,7 @@ class NLToSQLService:
             "\nBelow I will provide you with the tables and their relationships:\n\n" + schema_repr
         )
 
-        # user_question = (
-        #     f"Question: {question}\n\n"
-        #     "Return only the corresponding SQL query (without explanations)."
-        # )
-     
+   
 
         if conversation == None:
             resp = self.client.chat.completions.create(
@@ -226,104 +222,4 @@ class NLToSQLService:
 
         return final_sql
 
-
-    # def generate_sql_with_embedded_variants(self, question: str) -> List[str]:
-    #     """
-    #     1 Genera la SQL base.
-    #     2 Si es una SQL válida (no 'SELECT Not available'), busca todos los '... = 'valor''.
-    #     3 Para cada valor literal, usa FAISS para encontrar variantes.
-    #     4 Genera nuevas SQL reemplazando esos literales.
-    #     5 Devuelve lista: [original, variante1, variante2, ...].
-    #     """
-    #     sql = self.generate_sql(question).strip()
-
-    #     if sql.lower() == "select 'not available';":
-    #         # No hace variantes si no hay query real
-    #         return [sql]
-
-    #     # 1) Encontrar todos los '... = 'valor'' o LIKE '%valor%'
-    #     pattern = r"(=|LIKE)\s*['\"](.*?)['\"]"
-    #     matches = re.findall(pattern, sql, flags=re.IGNORECASE)
-
-    #     # Si no hay literales, devuelve solo la original
-    #     if not matches:
-    #         return [sql]
-
-    #     # 2) Para cada literal, buscar variantes FAISS
-    #     # Construir un mapa: literal -> [(tabla, columna, texto_relacionado)]
-    #     replacements = {}
-
-    #     for op, literal in matches:
-    #         literal_clean = literal.strip()
-    #         literal_clean = literal_clean.strip('%')
-            
-    #         # Consultar inverted_index: recupera lista de indices para este literal en todas las tablas/columnas
-    #         # Aquí asumimos FAISS ya tiene el mapeo de (tabla, columna)
-    #         faiss_hits = []
-    #         for (table, column) in self.faiss_runtime.inverted_index.keys():
-    #             hits = self.faiss_runtime.search(
-    #                 word=literal_clean,
-    #                 table=table,
-    #                 column=column,
-    #                 k=3,
-    #                 threshold=0.60
-    #             )
-    #             print("------")
-    #             print(literal_clean, (table, column))
-    #             print(hits)
-    #             print("------")
-    #             faiss_hits.extend(hits)
-    #         # Ordena por similitud descendente
-    #         faiss_hits = sorted(faiss_hits, key=lambda x: -x[1])
-    #         if faiss_hits:
-    #             replacements[literal_clean] = [t[2][2] for t in faiss_hits]  # lista de textos relacionados
-
-    #     # 3) Generar variantes reemplazando cada literal por cada alternativa posible
-    #     variants = [sql]  # original primero
-
-    #     for literal, alternatives in replacements.items():
-    #         new_variants = []
-    #         for variant_sql in variants:
-    #             for alt in alternatives:
-    #                 # reemplazo literal simple
-    #                 variant_sql_alt = re.sub(
-    #                     rf"(['\"]){literal}(['\"])", 
-    #                     f"'{alt}'", 
-    #                     variant_sql
-    #                 )
-    #                 new_variants.append(variant_sql_alt)
-    #         variants = new_variants
-
-    #     return variants
-
-
-
-    # def generate_sql_with_alternatives(self, question: str, table: str, column: str) -> str:
-    #     """
-    #     Variante mejorada:
-    #     1 Intenta generar la SQL directamente.
-    #     2 Si falla o el resultado no es bueno, usa FAISS para buscar sinónimos o frases relacionadas.
-    #     3 Reintenta con versiones alternativas de la pregunta.
-    #     """
-    #     base_sql = self.generate_sql(question)
-
-    #     if base_sql.strip().lower() == "select 'not available';":
-    #         # Buscar alternativas usando FAISS
-    #         alternatives = self.faiss_runtime.search(
-    #             word=question,
-    #             table=table,
-    #             column=column,
-    #             k=3,
-    #             threshold=0.60
-    #         )
-
-    #         for word, sim, (tabla, col, text) in alternatives:
-    #             # Reintentar con texto relacionado
-    #             alt_sql = self.generate_sql(text)
-    #             if alt_sql.strip().lower() != "select 'not available';":
-    #                 return alt_sql
-
-    #         # Si ninguna alternativa da buen resultado, devolver fallback
-    #         return base_sql
-
-    #     return base_sql
+    
