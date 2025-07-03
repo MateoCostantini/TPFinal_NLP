@@ -23,11 +23,12 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 2. Instalar dependencias
   pip install -r requirements.txt
 
-
+---
 
 ## Organización del archivo .db
 database/<nombre_de_tu_carpeta>/<tu_archivo>.db
 
+---
 
 ## Importante: Preprocesamiento obligatorio
 Antes de usar el sistema por primera vez, debes correr el preprocesamiento para:
