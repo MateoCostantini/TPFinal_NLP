@@ -31,8 +31,8 @@ database/<nombre_de_tu_carpeta>/<tu_archivo>.db
 Antes de usar el sistema por primera vez, debes correr el preprocesamiento para:
 * Generar los embeddings del esquema de tu base
 * Crear el esquema en JSON utilizado internamente
-# Para eso, se debe ejecutar:
-# python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
+### Para eso, se debe ejecutar:
+### python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
 
 
 ## Uso interactivo del modelo
