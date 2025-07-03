@@ -12,12 +12,6 @@ from classifier import ClassifierService
 from modifier_SQL import SQLModifierModel
 from evaluator import Evaluator
 
-#================= MUY BUENO ESTO PARA CORRERLO POR COMANDO:
-# if __name__ == "__main__":
-#     import argparse
-#     parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite")
-#     parser.add_argument("--db", required=True, help="Ruta al archivo .db de entrada")
-#     args = parser.parse_args()
 
 
 class Tablon:
@@ -193,47 +187,11 @@ class Tablon:
 ##### ver si el preprocesamiento lo puede hacer en gpu.
 #### dirigir el pipeline segun corresponda. (not available, status: error, tabla vacia, etc.)
 ##### en vez de que el que elige la mejor query reescriba la query podria capaz elegir el indice de la mejor y despues la agarro [indice]
+#### habria que actualizar el esquema cunado el modificador realiza un cambio.
 
 
 
 
-# tablon = Tablon(
-#     db_path= "database\sakila_database\sakila_master.db", #args.db , (si hace evaluacion tiene que ser database\sakila_database\sakila_master.db sino args.db)
-#     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-#     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
-#     azure_api_version_embeddings="2023-12-01-preview",
-#     deployment_embeddings="text-embedding-3-small-tablon",
-#     azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-#     azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-#     azure_api_version_model="2023-12-01-preview",
-#     deployment_model="gpt-4o-mini-tute",
-#     preprocess = False ## conseguir de args.p
-#     )
-
-
-
-
-# while True:
-#     print("")
-#     question = input("-> ")
-#     if question.lower() in ["q", "quit"]:
-#         break
-#     elif question.lower() in ["eval", "evaluate"]:
-#         n = int(input("How many iterations do you want to evaluate? "))
-#         print("")
-#         tablon.evaluate(n)
-#     else:
-#         print("")
-#         tablon.answer(question)
-#     print("")
-
-
-
-# if __name__ == "__main__":
-#     import argparse
-#     parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite")
-#     parser.add_argument("--db", required=True, help="Ruta al archivo .db de entrada")
-#     args = parser.parse_args()
 
 def main():
     parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite y evaluación del modelo.")
