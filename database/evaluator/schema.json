@@ -1,0 +1,631 @@
+{
+  "tables": {
+    "actor": {
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "numeric"
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "actor_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "actor_id": 1,
+        "first_name": "PENELOPE",
+        "last_name": "GUINESS",
+        "last_update": "2020-12-23 07:12:29"
+      }
+    },
+    "country": {
+      "columns": [
+        {
+          "name": "country_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "country",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "country_id"
+      ],
+      "nullable_columns": [
+        "last_update"
+      ],
+      "sample_row": {
+        "country_id": 1,
+        "country": "Afghanistan",
+        "last_update": "2020-12-23 07:12:12"
+      }
+    },
+    "city": {
+      "columns": [
+        {
+          "name": "city_id",
+          "type": "INT"
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "country_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "city_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "city_id": 1,
+        "city": "A Corua (La Corua)",
+        "country_id": 87,
+        "last_update": "2020-12-23 07:12:14"
+      }
+    },
+    "address": {
+      "columns": [
+        {
+          "name": "address_id",
+          "type": "INT"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "address2",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "district",
+          "type": "VARCHAR(20)"
+        },
+        {
+          "name": "city_id",
+          "type": "INT"
+        },
+        {
+          "name": "postal_code",
+          "type": "VARCHAR(10)"
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR(20)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "address_id"
+      ],
+      "nullable_columns": [
+        "address2",
+        "postal_code"
+      ],
+      "sample_row": {
+        "address_id": 1,
+        "address": "47 MySakila Drive",
+        "address2": null,
+        "district": " ",
+        "city_id": 300,
+        "postal_code": null,
+        "phone": " ",
+        "last_update": "2020-12-23 07:12:21"
+      }
+    },
+    "language": {
+      "columns": [
+        {
+          "name": "language_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "name",
+          "type": "CHAR(20)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "language_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "language_id": 1,
+        "name": "English",
+        "last_update": "2020-12-23 07:12:12"
+      }
+    },
+    "category": {
+      "columns": [
+        {
+          "name": "category_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(25)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "category_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "category_id": 1,
+        "name": "Action",
+        "last_update": "2020-12-23 07:12:31"
+      }
+    },
+    "customer": {
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "INT"
+        },
+        {
+          "name": "store_id",
+          "type": "INT"
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "address_id",
+          "type": "INT"
+        },
+        {
+          "name": "active",
+          "type": "CHAR(1)"
+        },
+        {
+          "name": "create_date",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "customer_id"
+      ],
+      "nullable_columns": [
+        "email"
+      ],
+      "sample_row": {
+        "customer_id": 1,
+        "store_id": 1,
+        "first_name": "MARY",
+        "last_name": "SMITH",
+        "email": "MARY.SMITH@sakilacustomer.org",
+        "address_id": 5,
+        "active": "1",
+        "create_date": "2006-02-14 22:04:36.000",
+        "last_update": "2020-12-23 07:15:11"
+      }
+    },
+    "film": {
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "INT"
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "description",
+          "type": "BLOB SUB_TYPE TEXT"
+        },
+        {
+          "name": "release_year",
+          "type": "VARCHAR(4)"
+        },
+        {
+          "name": "language_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "original_language_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "rental_duration",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "rental_rate",
+          "type": "DECIMAL(4,2)"
+        },
+        {
+          "name": "length",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "replacement_cost",
+          "type": "DECIMAL(5,2)"
+        },
+        {
+          "name": "rating",
+          "type": "VARCHAR(10)"
+        },
+        {
+          "name": "special_features",
+          "type": "VARCHAR(100)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "film_id"
+      ],
+      "nullable_columns": [
+        "description",
+        "release_year",
+        "original_language_id",
+        "length",
+        "rating",
+        "special_features"
+      ],
+      "sample_row": {
+        "film_id": 1,
+        "title": "ACADEMY DINOSAUR",
+        "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies",
+        "release_year": "2006",
+        "language_id": 1,
+        "original_language_id": null,
+        "rental_duration": 6,
+        "rental_rate": 0.99,
+        "length": 86,
+        "replacement_cost": 20.99,
+        "rating": "PG",
+        "special_features": "Deleted Scenes,Behind the Scenes",
+        "last_update": "2020-12-23 07:12:31"
+      }
+    },
+    "film_actor": {
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "INT"
+        },
+        {
+          "name": "film_id",
+          "type": "INT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "actor_id",
+        "film_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "actor_id": 1,
+        "film_id": 1,
+        "last_update": "2020-12-23 07:13:43"
+      }
+    },
+    "film_category": {
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "INT"
+        },
+        {
+          "name": "category_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "film_id",
+        "category_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "film_id": 1,
+        "category_id": 6,
+        "last_update": "2020-12-23 07:14:58"
+      }
+    },
+    "film_text": {
+      "columns": [
+        {
+          "name": "film_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "description",
+          "type": "BLOB SUB_TYPE TEXT"
+        }
+      ],
+      "primary_keys": [
+        "film_id"
+      ],
+      "nullable_columns": [
+        "description"
+      ],
+      "sample_row": null
+    },
+    "inventory": {
+      "columns": [
+        {
+          "name": "inventory_id",
+          "type": "INT"
+        },
+        {
+          "name": "film_id",
+          "type": "INT"
+        },
+        {
+          "name": "store_id",
+          "type": "INT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "inventory_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "inventory_id": 1,
+        "film_id": 1,
+        "store_id": 1,
+        "last_update": "2020-12-23 07:12:45"
+      }
+    },
+    "staff": {
+      "columns": [
+        {
+          "name": "staff_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR(45)"
+        },
+        {
+          "name": "address_id",
+          "type": "INT"
+        },
+        {
+          "name": "picture",
+          "type": "BLOB"
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(50)"
+        },
+        {
+          "name": "store_id",
+          "type": "INT"
+        },
+        {
+          "name": "active",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "username",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "password",
+          "type": "VARCHAR(40)"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "staff_id"
+      ],
+      "nullable_columns": [
+        "picture",
+        "email",
+        "password"
+      ],
+      "sample_row": {
+        "staff_id": 1,
+        "first_name": "Mike",
+        "last_name": "Hillyer",
+        "address_id": 3,
+        "picture": null,
+        "email": "Mike.Hillyer@sakilastaff.com",
+        "store_id": 1,
+        "active": 1,
+        "username": "Mike",
+        "password": "8cb2237d0679ca88db6464eac60da96345513964",
+        "last_update": "2020-12-23 07:12:31"
+      }
+    },
+    "store": {
+      "columns": [
+        {
+          "name": "store_id",
+          "type": "INT"
+        },
+        {
+          "name": "manager_staff_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "address_id",
+          "type": "INT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "store_id"
+      ],
+      "nullable_columns": [],
+      "sample_row": {
+        "store_id": 1,
+        "manager_staff_id": 1,
+        "address_id": 1,
+        "last_update": "2020-12-23 07:12:31"
+      }
+    },
+    "payment": {
+      "columns": [
+        {
+          "name": "payment_id",
+          "type": "INT"
+        },
+        {
+          "name": "customer_id",
+          "type": "INT"
+        },
+        {
+          "name": "staff_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "rental_id",
+          "type": "INT"
+        },
+        {
+          "name": "amount",
+          "type": "DECIMAL(5,2)"
+        },
+        {
+          "name": "payment_date",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "payment_id"
+      ],
+      "nullable_columns": [
+        "rental_id"
+      ],
+      "sample_row": {
+        "payment_id": 1,
+        "customer_id": 1,
+        "staff_id": 1,
+        "rental_id": 76,
+        "amount": 2.99,
+        "payment_date": "2005-05-25 11:30:37.000",
+        "last_update": "2020-12-23 07:19:10"
+      }
+    },
+    "rental": {
+      "columns": [
+        {
+          "name": "rental_id",
+          "type": "INT"
+        },
+        {
+          "name": "rental_date",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "inventory_id",
+          "type": "INT"
+        },
+        {
+          "name": "customer_id",
+          "type": "INT"
+        },
+        {
+          "name": "return_date",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "staff_id",
+          "type": "SMALLINT"
+        },
+        {
+          "name": "last_update",
+          "type": "TIMESTAMP"
+        }
+      ],
+      "primary_keys": [
+        "rental_id"
+      ],
+      "nullable_columns": [
+        "return_date"
+      ],
+      "sample_row": {
+        "rental_id": 1,
+        "rental_date": "2005-05-24 22:53:30.000",
+        "inventory_id": 367,
+        "customer_id": 130,
+        "return_date": "2005-05-26 22:04:30.000",
+        "staff_id": 1,
+        "last_update": "2020-12-23 07:15:20"
+      }
+    }
+  }
+}
