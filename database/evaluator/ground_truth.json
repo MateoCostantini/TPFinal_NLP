@@ -1,0 +1,402 @@
+[
+  {
+    "sql": "SELECT first_name, last_name FROM actor ORDER BY last_name ASC;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de todos los actores ordenados por su apellido de forma ascendente?"
+  },
+  {
+    "sql": "SELECT city.city FROM city JOIN country ON city.country_id = country.country_id WHERE country.country = 'Afghanistan';",
+    "pregunta": "¿Cuáles son las ciudades de Afganistán?"
+  },
+  {
+    "sql": "SELECT title, rental_rate FROM film WHERE rental_rate < 2.00;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen un precio de alquiler inferior a 2.00?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM staff WHERE active = 1;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal activo?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM customer WHERE active = '1';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que están activos?"
+  },
+  {
+    "sql": "SELECT name FROM category WHERE last_update > '2020-01-01';",
+    "pregunta": "¿Cuáles son los nombres de las categorías que han sido actualizadas después del 1 de enero de 2020?"
+  },
+  {
+    "sql": "SELECT film.title, COUNT(film_actor.actor_id) AS actor_count FROM film JOIN film_actor ON film.film_id = film_actor.film_id GROUP BY film.title HAVING COUNT(film_actor.actor_id) > 2;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen más de dos actores?"
+  },
+  {
+    "sql": "SELECT city.city, address.phone FROM city JOIN address ON city.city_id = address.city_id WHERE address.phone IS NOT NULL;",
+    "pregunta": "¿Cuáles son las ciudades y los números de teléfono de las direcciones que tienen un teléfono registrado?"
+  },
+  {
+    "sql": "SELECT language.name FROM language WHERE last_update >= '2020-01-01';",
+    "pregunta": "¿Cuáles son los nombres de los idiomas que han sido actualizados desde el 1 de enero de 2020?"
+  },
+  {
+    "sql": "SELECT city.city, COUNT(customer.customer_id) AS customer_count FROM city JOIN address ON city.city_id = address.city_id JOIN customer ON address.address_id = customer.address_id GROUP BY city.city HAVING COUNT(customer.customer_id) > 5;",
+    "pregunta": "¿Cuáles son las ciudades que tienen más de cinco clientes registrados?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.country FROM country c JOIN city ci ON c.country_id = ci.country_id WHERE ci.city_id IN (SELECT city_id FROM address WHERE district = 'Californië');",
+    "pregunta": "¿Cuáles son los países que tienen ciudades en el distrito de 'Californië'?"
+  },
+  {
+    "sql": "SELECT a.first_name, a.last_name FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film f ON fa.film_id = f.film_id WHERE f.rating = 'PG';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en películas con una clasificación de 'PG'? "
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM staff WHERE store_id = 1;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que trabaja en la tienda con ID 1?"
+  },
+  {
+    "sql": "SELECT film.title, AVG(payment.amount) AS average_payment FROM film JOIN inventory ON film.film_id = inventory.film_id JOIN rental ON inventory.inventory_id = rental.inventory_id JOIN payment ON rental.rental_id = payment.rental_id GROUP BY film.title HAVING AVG(payment.amount) > 3.00;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen un pago promedio superior a 3.00?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id GROUP BY c.customer_id HAVING COUNT(r.rental_id) > 5;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado más de cinco alquileres?"
+  },
+  {
+    "sql": "SELECT title, description FROM film WHERE LENGTH(description) > 100;",
+    "pregunta": "¿Cuáles son los títulos y descripciones de las películas que tienen una descripción de más de 100 caracteres?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title FROM film f JOIN film_category fc ON f.film_id = fc.film_id JOIN category c ON fc.category_id = c.category_id WHERE c.name = 'Action';",
+    "pregunta": "¿Cuáles son los títulos de las películas que pertenecen a la categoría 'Action'?"
+  },
+  {
+    "sql": "SELECT city.city, COUNT(address.address_id) AS address_count FROM city JOIN address ON city.city_id = address.city_id GROUP BY city.city HAVING COUNT(address.address_id) > 3;",
+    "pregunta": "¿Cuáles son las ciudades que tienen más de tres direcciones registradas?"
+  },
+  {
+    "sql": "SELECT a.first_name, a.last_name, f.title FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film f ON fa.film_id = f.film_id WHERE f.release_year = '2006';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en películas estrenadas en 2006?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM customer WHERE email IS NOT NULL;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que tienen un correo electrónico registrado?"
+  },
+  {
+    "sql": "SELECT address.address, city.city FROM address JOIN city ON address.city_id = city.city_id WHERE address.district IS NOT NULL;",
+    "pregunta": "¿Cuáles son las direcciones y las ciudades que tienen un distrito registrado?"
+  },
+  {
+    "sql": "SELECT DISTINCT store.store_id, COUNT(inventory.inventory_id) AS inventory_count FROM store JOIN inventory ON store.store_id = inventory.store_id GROUP BY store.store_id HAVING COUNT(inventory.inventory_id) > 10;",
+    "pregunta": "¿Cuáles son los IDs de las tiendas que tienen más de diez artículos en inventario?"
+  },
+  {
+    "sql": "SELECT f.title, SUM(p.amount) AS total_payments FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id JOIN payment p ON r.rental_id = p.rental_id GROUP BY f.title HAVING SUM(p.amount) > 50.00;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han generado más de 50.00 en total de pagos?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title, c.name FROM film f JOIN film_category fc ON f.film_id = fc.film_id JOIN category c ON fc.category_id = c.category_id WHERE c.name LIKE 'C%';",
+    "pregunta": "¿Cuáles son los títulos de las películas que pertenecen a categorías cuyo nombre comienza con la letra 'C'? "
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(p.payment_id) AS payment_count FROM customer c JOIN payment p ON c.customer_id = p.customer_id GROUP BY c.customer_id HAVING COUNT(p.payment_id) > 3;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado más de tres pagos?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM customer WHERE store_id = 2;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que están asociados a la tienda con ID 2?"
+  },
+  {
+    "sql": "SELECT staff.first_name, staff.last_name FROM staff JOIN store ON staff.store_id = store.store_id WHERE store.manager_staff_id = 1;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que trabaja en la tienda cuyo gerente tiene el ID 1?"
+  },
+  {
+    "sql": "SELECT title, release_year FROM film WHERE release_year IS NOT NULL ORDER BY release_year DESC;",
+    "pregunta": "¿Cuáles son los títulos y los años de estreno de las películas que tienen un año de estreno registrado, ordenados de forma descendente?"
+  },
+  {
+    "sql": "SELECT DISTINCT a.first_name, a.last_name FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film f ON fa.film_id = f.film_id WHERE f.rental_rate > 2.00;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en películas con un precio de alquiler superior a 2.00?"
+  },
+  {
+    "sql": "SELECT COUNT(*) AS customer_count, city.city FROM city JOIN address ON city.city_id = address.city_id JOIN customer ON address.address_id = customer.address_id GROUP BY city.city HAVING COUNT(customer.customer_id) < 3;",
+    "pregunta": "¿Cuántos clientes hay en cada ciudad que tienen menos de tres registros?"
+  },
+  {
+    "sql": "SELECT DISTINCT city.city FROM city JOIN address ON city.city_id = address.city_id WHERE address.district = 'Californië';",
+    "pregunta": "¿Cuáles son las ciudades que están en el distrito de 'Californië'? "
+  },
+  {
+    "sql": "SELECT CONCAT(first_name, ' ', last_name) AS full_name, COUNT(rental_id) AS rental_count FROM customer JOIN rental ON customer.customer_id = rental.customer_id GROUP BY customer.customer_id HAVING rental_count > 10;",
+    "pregunta": "¿Cuáles son los nombres completos de los clientes que han realizado más de diez alquileres?"
+  },
+  {
+    "sql": "SELECT language.name, COUNT(film.film_id) AS film_count FROM language JOIN film ON language.language_id = film.language_id GROUP BY language.language_id HAVING COUNT(film.film_id) > 5;",
+    "pregunta": "¿Cuáles son los nombres de los idiomas que tienen más de cinco películas asociadas?"
+  },
+  {
+    "sql": "SELECT city.city, COUNT(customer.customer_id) AS customer_count FROM city JOIN address ON city.city_id = address.city_id JOIN customer ON address.address_id = customer.address_id GROUP BY city.city HAVING COUNT(customer.customer_id) = 0;",
+    "pregunta": "¿Cuáles son las ciudades que no tienen clientes registrados?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id GROUP BY c.customer_id HAVING COUNT(r.rental_id) BETWEEN 3 AND 5;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado entre tres y cinco alquileres?"
+  },
+  {
+    "sql": "SELECT title, COUNT(film_category.category_id) AS category_count FROM film JOIN film_category ON film.film_id = film_category.film_id GROUP BY film.title HAVING COUNT(film_category.category_id) > 1;",
+    "pregunta": "¿Cuáles son los títulos de las películas que pertenecen a más de una categoría?"
+  },
+  {
+    "sql": "SELECT title, COUNT(inventory.inventory_id) AS inventory_count FROM film JOIN inventory ON film.film_id = inventory.film_id GROUP BY film.title HAVING COUNT(inventory.inventory_id) > 5;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen más de cinco copias en inventario?"
+  },
+  {
+    "sql": "SELECT title, release_year FROM film WHERE rental_duration > 5;",
+    "pregunta": "¿Cuáles son los títulos y los años de estreno de las películas que tienen una duración de alquiler superior a 5 días?"
+  },
+  {
+    "sql": "SELECT c.city, COUNT(DISTINCT a.actor_id) AS actor_count FROM city c JOIN address ad ON c.city_id = ad.city_id JOIN customer cu ON ad.address_id = cu.address_id JOIN rental r ON cu.customer_id = r.customer_id JOIN inventory i ON r.inventory_id = i.inventory_id JOIN film f ON i.film_id = f.film_id JOIN film_actor a ON f.film_id = a.film_id GROUP BY c.city HAVING COUNT(DISTINCT a.actor_id) > 3;",
+    "pregunta": "¿Cuáles son las ciudades que tienen más de tres actores que han participado en películas alquiladas?"
+  },
+  {
+    "sql": "SELECT customer.first_name, customer.last_name, payment.amount FROM customer JOIN payment ON customer.customer_id = payment.customer_id WHERE payment.amount > 5.00;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado pagos superiores a 5.00?"
+  },
+  {
+    "sql": "SELECT f.title, f.rental_rate FROM film f WHERE f.rental_rate > 3.00 ORDER BY f.rental_rate DESC;",
+    "pregunta": "¿Cuáles son los títulos y las tarifas de alquiler de las películas que tienen una tarifa de alquiler superior a 3.00, ordenados de forma descendente?"
+  },
+  {
+    "sql": "SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS film_count FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id GROUP BY a.actor_id HAVING COUNT(fa.film_id) > 5;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en más de cinco películas?"
+  },
+  {
+    "sql": "SELECT f.title, COUNT(DISTINCT fa.actor_id) AS actor_count FROM film f JOIN film_actor fa ON f.film_id = fa.film_id GROUP BY f.title HAVING actor_count >= 3;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen tres o más actores distintos?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id WHERE r.return_date IS NOT NULL GROUP BY c.customer_id HAVING COUNT(r.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado alquileres y han devuelto al menos una película?"
+  },
+  {
+    "sql": "SELECT country.country, COUNT(city.city_id) AS city_count FROM country JOIN city ON country.country_id = city.country_id GROUP BY country.country HAVING COUNT(city.city_id) > 2;",
+    "pregunta": "¿Cuáles son los países que tienen más de dos ciudades registradas?"
+  },
+  {
+    "sql": "SELECT store_id, AVG(rental_duration) AS average_rental_duration FROM film JOIN inventory ON film.film_id = inventory.film_id JOIN rental ON inventory.inventory_id = rental.inventory_id GROUP BY store_id HAVING AVG(rental_duration) > 5;",
+    "pregunta": "¿Cuáles son los IDs de las tiendas que tienen una duración promedio de alquiler superior a 5 días?"
+  },
+  {
+    "sql": "SELECT c.city, COUNT(DISTINCT customer.customer_id) AS unique_customer_count FROM city c JOIN address a ON c.city_id = a.city_id JOIN customer ON a.address_id = customer.address_id GROUP BY c.city HAVING COUNT(DISTINCT customer.customer_id) >= 2;",
+    "pregunta": "¿Cuáles son las ciudades que tienen al menos dos clientes únicos registrados?"
+  },
+  {
+    "sql": "SELECT f.title, COUNT(DISTINCT fa.actor_id) AS actor_count FROM film f JOIN film_actor fa ON f.film_id = fa.film_id GROUP BY f.film_id HAVING actor_count = 1;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen exactamente un actor distinto?"
+  },
+  {
+    "sql": "SELECT DISTINCT a.first_name, a.last_name FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film f ON fa.film_id = f.film_id WHERE f.rental_rate IS NOT NULL AND f.rental_rate < 2.50;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en películas con una tarifa de alquiler inferior a 2.50?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS total_rentals FROM customer c JOIN rental r ON c.customer_id = r.customer_id GROUP BY c.customer_id HAVING total_rentals > 10;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado más de diez alquileres?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM staff WHERE last_update >= '2020-01-01';",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que ha sido actualizado desde el 1 de enero de 2020?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(p.payment_id) AS payment_count FROM customer c JOIN payment p ON c.customer_id = p.customer_id GROUP BY c.customer_id HAVING COUNT(p.payment_id) BETWEEN 1 AND 3;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado entre uno y tres pagos?"
+  },
+  {
+    "sql": "SELECT title, COUNT(DISTINCT actor_id) AS unique_actor_count FROM film JOIN film_actor ON film.film_id = film_actor.film_id GROUP BY film.title HAVING unique_actor_count = 2;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen exactamente dos actores distintos?"
+  },
+  {
+    "sql": "SELECT customer.first_name, customer.last_name, COUNT(rental.rental_id) AS rental_count FROM customer JOIN rental ON customer.customer_id = rental.customer_id WHERE rental.rental_date >= '2023-01-01' GROUP BY customer.customer_id HAVING COUNT(rental.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado al menos un alquiler desde el 1 de enero de 2023?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title, COUNT(DISTINCT fc.category_id) AS category_count FROM film f JOIN film_category fc ON f.film_id = fc.film_id GROUP BY f.title HAVING COUNT(DISTINCT fc.category_id) = 1;",
+    "pregunta": "¿Cuáles son los títulos de las películas que pertenecen exactamente a una sola categoría?"
+  },
+  {
+    "sql": "SELECT city.city, store.store_id FROM city JOIN store ON city.city_id = store.address_id WHERE city.city IS NOT NULL;",
+    "pregunta": "¿Cuáles son las ciudades y los IDs de las tiendas que tienen una ciudad registrada?"
+  },
+  {
+    "sql": "SELECT DISTINCT addr.city_id, c.country FROM address addr JOIN city c ON addr.city_id = c.city_id JOIN country co ON c.country_id = co.country_id WHERE co.country = 'Afghanistan';",
+    "pregunta": "¿Cuáles son los IDs de las ciudades y los países que tienen registro en Afganistán?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id GROUP BY c.customer_id HAVING COUNT(r.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado al menos un alquiler?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, SUM(p.amount) AS total_amount FROM customer c JOIN payment p ON c.customer_id = p.customer_id GROUP BY c.customer_id HAVING total_amount > 20.00;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado pagos por un total superior a 20.00?"
+  },
+  {
+    "sql": "SELECT s.first_name, s.last_name FROM staff s JOIN store st ON s.store_id = st.store_id WHERE st.manager_staff_id = 2;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que trabaja en la tienda cuyo gerente tiene el ID 2?"
+  },
+  {
+    "sql": "SELECT store.store_id, COUNT(payment.payment_id) AS payment_count FROM store JOIN inventory ON store.store_id = inventory.store_id JOIN rental ON inventory.inventory_id = rental.inventory_id JOIN payment ON rental.rental_id = payment.rental_id GROUP BY store.store_id HAVING COUNT(payment.payment_id) > 5;",
+    "pregunta": "¿Cuáles son los IDs de las tiendas que han generado más de cinco pagos?"
+  },
+  {
+    "sql": "SELECT customer.first_name, customer.last_name, COUNT(r.rental_id) AS total_rentals FROM customer JOIN rental ON customer.customer_id = rental.customer_id WHERE rental.rental_date >= '2022-01-01' GROUP BY customer.customer_id HAVING COUNT(r.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado al menos un alquiler desde el 1 de enero de 2022?"
+  },
+  {
+    "sql": "SELECT f.title, f.release_year FROM film f JOIN film_actor fa ON f.film_id = fa.film_id WHERE fa.actor_id = 3;",
+    "pregunta": "¿Cuáles son los títulos y años de estreno de las películas en las que ha participado el actor con ID 3?"
+  },
+  {
+    "sql": "SELECT f.title, SUM(p.amount) AS total_revenue FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id JOIN payment p ON r.rental_id = p.rental_id GROUP BY f.title HAVING total_revenue > 100.00;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han generado más de 100.00 en ingresos totales?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM staff WHERE active = 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que no están activos?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id GROUP BY c.customer_id HAVING rental_count <= 2;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado dos o menos alquileres?"
+  },
+  {
+    "sql": "SELECT title, COUNT(DISTINCT r.customer_id) AS unique_customer_count FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id GROUP BY f.title HAVING COUNT(DISTINCT r.customer_id) > 3;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han sido alquiladas por más de tres clientes diferentes?"
+  },
+  {
+    "sql": "SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS film_count FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id GROUP BY a.actor_id HAVING film_count <= 2;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en dos o menos películas?"
+  },
+  {
+    "sql": "SELECT film.title, f.rental_rate FROM film f JOIN inventory ON f.film_id = inventory.film_id GROUP BY f.title HAVING COUNT(inventory.inventory_id) > 3;",
+    "pregunta": "¿Cuáles son los títulos y tarifas de alquiler de las películas que tienen más de tres copias en inventario?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title, c.category_id FROM film f JOIN film_category fc ON f.film_id = fc.film_id JOIN category c ON fc.category_id = c.category_id WHERE c.name = 'Comedy';",
+    "pregunta": "¿Cuáles son los títulos de las películas que pertenecen a la categoría 'Comedy'? "
+  },
+  {
+    "sql": "SELECT c.city, COUNT(cu.customer_id) AS customer_count FROM city c JOIN address a ON c.city_id = a.city_id JOIN customer cu ON a.address_id = cu.address_id GROUP BY c.city HAVING COUNT(cu.customer_id) > 10;",
+    "pregunta": "¿Cuáles son las ciudades que tienen más de diez clientes registrados?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.country, COUNT(ci.city_id) AS city_count FROM country c JOIN city ci ON c.country_id = ci.country_id GROUP BY c.country HAVING COUNT(ci.city_id) < 2;",
+    "pregunta": "¿Cuáles son los países que tienen menos de dos ciudades registradas?"
+  },
+  {
+    "sql": "SELECT c.city, COUNT(cu.customer_id) AS customer_count FROM city c JOIN address a ON c.city_id = a.city_id JOIN customer cu ON a.address_id = cu.address_id GROUP BY c.city HAVING COUNT(cu.customer_id) BETWEEN 3 AND 5;",
+    "pregunta": "¿Cuáles son las ciudades que tienen entre tres y cinco clientes registrados?"
+  },
+  {
+    "sql": "SELECT film.title, language.name FROM film JOIN language ON film.language_id = language.language_id WHERE language.name = 'English';",
+    "pregunta": "¿Cuáles son los títulos de las películas que están en inglés?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM staff WHERE store_id = 3;",
+    "pregunta": "¿Cuáles son los nombres y apellidos del personal que trabaja en la tienda con ID 3?"
+  },
+  {
+    "sql": "SELECT f.title, SUM(p.amount) AS total_payments FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id JOIN payment p ON r.rental_id = p.rental_id GROUP BY f.title HAVING total_payments < 30.00;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han generado menos de 30.00 en total de pagos?"
+  },
+  {
+    "sql": "SELECT f.title, COUNT(r.customer_id) AS rental_count FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id GROUP BY f.title HAVING rental_count > 10;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han sido alquiladas más de diez veces?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.country, COUNT(ci.city_id) AS city_count FROM country c JOIN city ci ON c.country_id = ci.country_id GROUP BY c.country HAVING COUNT(ci.city_id) = 1;",
+    "pregunta": "¿Cuáles son los países que tienen exactamente una ciudad registrada?"
+  },
+  {
+    "sql": "SELECT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id WHERE r.return_date IS NULL GROUP BY c.customer_id HAVING COUNT(r.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado alquileres y no han devuelto al menos una película?"
+  },
+  {
+    "sql": "SELECT title, rental_duration FROM film WHERE rental_duration BETWEEN 2 AND 5;",
+    "pregunta": "¿Cuáles son los títulos y la duración del alquiler de las películas que tienen una duración de alquiler entre 2 y 5 días?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM customer WHERE create_date >= '2021-01-01';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han sido creados desde el 1 de enero de 2021?"
+  },
+  {
+    "sql": "SELECT f.title, SUM(p.amount) AS total_payments FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id JOIN payment p ON r.rental_id = p.rental_id GROUP BY f.title HAVING COUNT(p.payment_id) > 5;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han generado más de cinco pagos?"
+  },
+  {
+    "sql": "SELECT DISTINCT country.country FROM country JOIN city ON country.country_id = city.country_id WHERE city.city_id IN (SELECT city_id FROM address WHERE district = 'District 1');",
+    "pregunta": "¿Cuáles son los países que tienen ciudades en el distrito 'District 1'?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.first_name, c.last_name FROM customer c JOIN payment p ON c.customer_id = p.customer_id WHERE p.payment_date >= '2023-01-01';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado pagos desde el 1 de enero de 2023?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title, f.release_year FROM film f JOIN payment p ON f.film_id = p.rental_id WHERE p.amount > 5.00;",
+    "pregunta": "¿Cuáles son los títulos y años de estreno de las películas que han generado un pago superior a 5.00?"
+  },
+  {
+    "sql": "SELECT customer.first_name, customer.last_name, COUNT(r.rental_id) AS rental_count FROM customer JOIN rental ON customer.customer_id = rental.customer_id WHERE rental.rental_date < '2020-01-01' GROUP BY customer.customer_id HAVING COUNT(r.rental_id) > 0;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado alquileres antes del 1 de enero de 2020?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM customer ORDER BY last_name ASC;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de todos los clientes ordenados por su apellido de forma ascendente?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.first_name, c.last_name, COUNT(r.rental_id) AS rental_count FROM customer c JOIN rental r ON c.customer_id = r.customer_id WHERE r.rental_date BETWEEN '2020-01-01' AND '2020-12-31' GROUP BY c.customer_id HAVING rental_count > 5;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado más de cinco alquileres entre el 1 de enero y el 31 de diciembre de 2020?"
+  },
+  {
+    "sql": "SELECT title, COUNT(DISTINCT customer.customer_id) AS unique_customer_count FROM film f JOIN inventory i ON f.film_id = i.film_id JOIN rental r ON i.inventory_id = r.inventory_id JOIN customer c ON r.customer_id = c.customer_id GROUP BY f.title HAVING unique_customer_count > 5;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han sido alquiladas por más de cinco clientes diferentes?"
+  },
+  {
+    "sql": "SELECT first_name, last_name FROM actor WHERE last_update > '2020-01-01';",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han sido actualizados después del 1 de enero de 2020?"
+  },
+  {
+    "sql": "SELECT a.first_name, a.last_name, COUNT(f.film_id) AS film_count FROM actor a JOIN film_actor fa ON a.actor_id = fa.actor_id JOIN film f ON fa.film_id = f.film_id GROUP BY a.actor_id HAVING film_count > 3;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los actores que han participado en más de tres películas?"
+  },
+  {
+    "sql": "SELECT address.address, city.city FROM address JOIN city ON address.city_id = city.city_id WHERE city.city IS NOT NULL;",
+    "pregunta": "¿Cuáles son las direcciones y las ciudades que tienen una ciudad registrada?"
+  },
+  {
+    "sql": "SELECT f.title, f.release_year FROM film f WHERE f.length > 100 ORDER BY f.release_year ASC;",
+    "pregunta": "¿Cuáles son los títulos y años de estreno de las películas que tienen una duración superior a 100 minutos, ordenados por año de estreno de forma ascendente?"
+  },
+  {
+    "sql": "SELECT DISTINCT city.city, COUNT(customer.customer_id) AS customer_count FROM city JOIN address ON city.city_id = address.city_id JOIN customer ON address.address_id = customer.address_id GROUP BY city.city HAVING COUNT(customer.customer_id) > 0;",
+    "pregunta": "¿Cuáles son las ciudades que tienen al menos un cliente registrado?"
+  },
+  {
+    "sql": "SELECT film.title, COUNT(rental.rental_id) AS rental_count FROM film JOIN inventory ON film.film_id = inventory.film_id JOIN rental ON inventory.inventory_id = rental.inventory_id GROUP BY film.title HAVING rental_count > 15;",
+    "pregunta": "¿Cuáles son los títulos de las películas que han sido alquiladas más de quince veces?"
+  },
+  {
+    "sql": "SELECT DISTINCT f.title, COUNT(i.inventory_id) AS inventory_count FROM film f JOIN inventory i ON f.film_id = i.film_id GROUP BY f.title HAVING inventory_count <= 3;",
+    "pregunta": "¿Cuáles son los títulos de las películas que tienen tres o menos copias en inventario?"
+  },
+  {
+    "sql": "SELECT city.city, COUNT(DISTINCT customer.customer_id) AS unique_customer_count FROM city JOIN address ON city.city_id = address.city_id JOIN customer ON address.address_id = customer.address_id GROUP BY city.city HAVING COUNT(DISTINCT customer.customer_id) > 2;",
+    "pregunta": "¿Cuáles son las ciudades que tienen más de dos clientes únicos registrados?"
+  },
+  {
+    "sql": "SELECT DISTINCT c.first_name, c.last_name FROM customer c JOIN payment p ON c.customer_id = p.customer_id WHERE p.amount < 5.00;",
+    "pregunta": "¿Cuáles son los nombres y apellidos de los clientes que han realizado pagos inferiores a 5.00?"
+  },
+  {
+    "sql": "SELECT title, rental_rate FROM film WHERE length < 90;",
+    "pregunta": "¿Cuáles son los títulos y tarifas de alquiler de las películas que tienen una duración inferior a 90 minutos?"
+  },
+  {
+    "sql": "SELECT address.city_id, COUNT(customer.customer_id) AS customer_count FROM address JOIN customer ON address.address_id = customer.address_id GROUP BY address.city_id HAVING COUNT(customer.customer_id) > 10;",
+    "pregunta": "¿Cuáles son los IDs de las direcciones que tienen más de diez clientes asociados?"
+  }
+]
