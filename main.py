@@ -257,6 +257,18 @@ def main():
             deployment_model="gpt-4o-mini-tute",
             preprocess=False  # no se requiere preprocesamiento en evaluación
         )
+        # tablon = Tablon(
+        #     db_path="database/sakila_database/sakila_master.db",  # ruta fija para evaluación
+        #     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
+        #     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
+        #     azure_api_version_embeddings="2023-12-01-preview",
+        #     deployment_embeddings="text-embedding-3-small-tablon",
+        #     azure_api_key_model="7GhJHYyu4vRqgfF9KXArM46BTvfQy2eMF6emctkOZvjc91ZeMq1uJQQJ99BGACHYHv6XJ3w3AAABACOGIAj7",
+        #     azure_api_endpoint_model="https://glewit-openai-2.openai.azure.com/",
+        #     azure_api_version_model="2024-12-01-preview",
+        #     deployment_model="gpt-4o-glewit",
+        #     preprocess=False  # no se requiere preprocesamiento en evaluación
+        # )
 
         tablon.evaluate()
 
@@ -283,9 +295,6 @@ def main():
             question = input("-> ")
             if question.lower() in ["q", "quit"]:
                 break
-            elif question.lower() in ["eval", "evaluate"]:
-                print("")
-                tablon.evaluate()
             else:
                 print("")
                 tablon.answer(question)
