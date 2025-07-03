@@ -31,7 +31,9 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 Antes de usar el sistema por primera vez, debes correr el preprocesamiento para:
 * Generar los embeddings del esquema de tu base
 * Crear el esquema en JSON utilizado internamente
- `python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess `
+```bash
+python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
+ ```
 
 
 ## Uso interactivo del modelo
