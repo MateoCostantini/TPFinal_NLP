@@ -26,7 +26,7 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 
 
 ## Organización del archivo .db
-database/<nombre_de_tu_carpeta>/<archivo>.db
+database/<nombre_de_tu_carpeta>/<tu_archivo>.db
 
 
 ## Importante: Preprocesamiento obligatorio
