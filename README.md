@@ -15,8 +15,8 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 ## Instalación
 
 1. Clonar el repositorio
-  git clone https://github.com/tu-usuario/tablon.git
-  cd tablon
+  git clone https://github.com/MateoCostantini/TPFinal_NLP.git
+  cd TPFinal_NLP
 
 2. Instalar dependencias
   pip install -r requirements.txt
@@ -24,9 +24,7 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 
 
 ## Organización del archivo .db
-database/
-    └── nombre_de_tu_carpeta/
-                └── archivo.db
+database/<nombre_de_tu_carpeta>/<archivo>.db
 
 
 ## Importante: Preprocesamiento obligatorio
