@@ -108,7 +108,7 @@ class Tablon:
 
         # ================ Evaluación del modelo =====================
         self.evaluator = Evaluator(
-            db_path="database\sakila_database\sakila_master.db",
+            db_path=self.db_path,
             azure_api_key=self.azure_api_key_model,
             azure_api_endpoint=self.azure_api_endpoint_model,
             azure_api_version=self.azure_api_version_model,
@@ -204,7 +204,7 @@ def main():
     if args.eval:
         print(" Ejecutando evaluación...")
         tablon = Tablon(
-            db_path="database/sakila_database/sakila_master.db",  # ruta fija para evaluación
+            db_path="database\evaluator\sakila_master.db",  # ruta fija para evaluación
             azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
             azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
             azure_api_version_embeddings="2023-12-01-preview",
