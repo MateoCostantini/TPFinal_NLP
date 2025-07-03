@@ -37,10 +37,14 @@ python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
 
 
 ## Uso interactivo del modelo
-  `python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db`
+```bash
+python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db
+```
 
 
 ## Evaluacion del modelo
-  `python main.py --eval`
+```bash
+python main.py --eval
+```
 
 
