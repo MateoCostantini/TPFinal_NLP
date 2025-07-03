@@ -16,17 +16,14 @@ Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje 
 
 ## Instalación
 
-1. Clonar el repositorio
-  git clone https://github.com/MateoCostantini/TPFinal_NLP.git
-  cd TPFinal_NLP
-
-2. Instalar dependencias
-  pip install -r requirements.txt
+1. Clonar el repositorio: `git clone https://github.com/MateoCostantini/TPFinal_NLP.git`
+2. `cd TPFinal_NLP`
+3. Instalar dependencias: `pip install -r requirements.txt`
 
 ---
 
 ## Organización del archivo .db
-database/<nombre_de_tu_carpeta>/<tu_archivo>.db
+`database/<nombre_de_tu_carpeta>/<tu_archivo>.db`
 
 ---
 
@@ -34,15 +31,20 @@ database/<nombre_de_tu_carpeta>/<tu_archivo>.db
 Antes de usar el sistema por primera vez, debes correr el preprocesamiento para:
 * Generar los embeddings del esquema de tu base
 * Crear el esquema en JSON utilizado internamente
-Para eso, se debe ejecutar:
-  python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
+```bash
+python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db --preprocess
+ ```
 
 
 ## Uso interactivo del modelo
-  python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db
+```bash
+python main.py --db database/<nombre_de_tu_carpeta>/<tu_archivo>.db
+```
 
 
 ## Evaluacion del modelo
-  python main.py --eval
+```bash
+python main.py --eval
+```
 
 
