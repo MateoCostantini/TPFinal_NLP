@@ -1,3 +1,5 @@
+## Tablón
+
 Tablón es un sistema interactivo de pregunta-respuesta que transforma lenguaje natural en comandos SQL, usando modelos de clasificación, generación y modificación basados en Azure OpenAI. Permite consultar y modificar bases de datos SQLite usando texto en lenguaje natural, con un enfoque RAG (Retrieval-Augmented Generation) y evaluación automática.
 
 ---
