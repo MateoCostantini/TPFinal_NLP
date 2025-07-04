@@ -1,11 +1,9 @@
-import sqlite3
 import json
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from openai import AzureOpenAI
 import instructor
 import os
 from pydantic import BaseModel, Field
-import re
 import sqlglot
 from sqlglot import exp
 
@@ -82,9 +80,6 @@ class NLToSQLService:
         
 
     def generate_sql(self, user_question, conversation = None) -> str:
-        # if conversation == None:
-        #     conversation = []
-
         schema_repr = json.dumps(self.schema, indent=2, ensure_ascii=False)
         prompt = (
             "You are an SQL expert managing a database for SQLite and you will assist by generating a query."
@@ -95,13 +90,10 @@ class NLToSQLService:
             "ONLY return the SQL query (no explanations, no markdown, no extra text)."
             "The query must be syntactically correct."
             "If the question cannot be answered directly with the given tables, return an empty SELECT: SELECT 'Not available';"
-            #"BUT: If the user asks a general question about what can be queried or about the structure of the database, return a sample query showing a few representative tables and columns."
             "The answer must be quick, efficient, and as direct as possible."
-            #"Correctly consider which fields from the database the user needs and also include information that could be useful."
             "Ensure to show the columns that the user is asking for and additionaly, every column that you are using to compare with (==, LIKE, etc.) in the query."
             "Ensure that rows are not duplicated."
             "Use descriptive names for the generated columns."
-            #"Always include all columns from the tables used in the query. Especially include ALL columns from each table you join or query."
 
             "\nBelow I will provide you with the tables and their relationships:\n\n" + schema_repr
         )
@@ -123,7 +115,6 @@ class NLToSQLService:
             resp = self.client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": prompt}
-                    #{"role": "user", "content": user_question}
                 ] + conversation,
                 model=self.model,
                 max_tokens=512,
@@ -177,17 +168,15 @@ class NLToSQLService:
                     right = pred.right
                     if isinstance(right, exp.Literal) and isinstance(left, exp.Column):
                         col = left.name
-                        tbl_or_alias = left.table or default_table  # 👈 usa default si no hay tabla
+                        tbl_or_alias = left.table or default_table 
                         tbl = alias_to_table.get(tbl_or_alias, tbl_or_alias)
                         val = right.this
                         replacements.append((val, (tbl, col, val)))
 
-        # No literales -> solo devuelve original
         if not replacements:
             return sql
-        #print(replacements) 
         # 3 Busca variantes FAISS por cada literal
-        replacements_map = {}  # val -> [alt1, alt2, ...]
+        replacements_map = {}  
         for val, (table, column, _) in replacements:
             hits = self.faiss_runtime.search(
                 word=val.strip('%'),
@@ -196,12 +185,9 @@ class NLToSQLService:
                 k=3,
                 threshold=0.55
             )
-            #print(f"faiss busca por: {val.strip('%')} en {table}.{column}")
-            #print(hits)
             alt_texts = [h[2][2] for h in hits if h[2][2] != val]
             if alt_texts:
                 replacements_map[val] = alt_texts
-                #print(replacements_map[val])
 
         # 4 Genera variantes
         variants = [sql]  # original primero
@@ -216,7 +202,6 @@ class NLToSQLService:
         if len(variants) > 1:
             variants.pop(0)
 
-        # Quita duplicados
         variants = list(dict.fromkeys(variants))
         final_sql = self.choose_variants(question, variants)
 

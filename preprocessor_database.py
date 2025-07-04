@@ -8,7 +8,6 @@ import pickle
 from tqdm import tqdm
 from typing import List, Tuple, Dict, Any
 from collections import defaultdict
-import asyncio
 import json
 import logging
 
@@ -33,7 +32,6 @@ class SQLitePreprocessor:
         self.log_file = os.path.join(self.DB_folder, "db_actions.log")
 
 
-        # Azure OpenAI setup
         azure_client = AzureOpenAI(
             api_key=azure_api_key,
             api_version=azure_api_version,
@@ -65,7 +63,9 @@ class SQLitePreprocessor:
             if not text_columns:
                 continue
 
-            cursor.execute(f"SELECT {', '.join(text_columns)} FROM {table}")
+            escaped_columns = [f'"{col}"' for col in text_columns]
+            cursor.execute(f'SELECT {", ".join(escaped_columns)} FROM "{table}"')
+
             rows = cursor.fetchall()
 
             for row in rows:
@@ -78,7 +78,7 @@ class SQLitePreprocessor:
 
         return texts, mapping, dict(inverted_index)
 
-    def generate_embeddings(self, texts: List[str], batch_size: int = 100) -> np.ndarray:
+    def generate_embeddings(self, texts: List[str], batch_size: int = 512) -> np.ndarray:
         embeddings = []
         for i in tqdm(range(0, len(texts), batch_size), desc="Batch embeddings"):
             batch = texts[i : i + batch_size]
@@ -119,10 +119,9 @@ class SQLitePreprocessor:
     
     def create_log_file(self):
 
-        self.logger = logging.getLogger('sql_logger')  # Logger exclusivo
+        self.logger = logging.getLogger('sql_logger')  
         self.logger.setLevel(logging.INFO)
 
-        # Evitá duplicar handlers si se crea múltiples veces
         if not self.logger.hasHandlers():
             file_handler = logging.FileHandler(self.log_file)
             formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')

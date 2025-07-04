@@ -1,7 +1,5 @@
 import os
-import json
 import argparse
-import logging
 
 from preprocessor_database import SQLitePreprocessor
 from faiss_runtime import SQLiteFAISSRuntime
@@ -56,7 +54,7 @@ class Tablon:
             self.preprocessor.run()  
             self.preprocessor.create_scheme()
         
-        # ===  Consultar (Busca reemplazos mas cercanos (RAG)) ===
+        # ===  Consultar (Busca reemplazos mas cercanos) ===
         self.runtime_FAISS = SQLiteFAISSRuntime(
             DB_folder = self.DB_folder,
             azure_api_key=self.azure_api_key_embeddings,
@@ -119,7 +117,7 @@ class Tablon:
 
 
     def preprocess_dataset(self):
-        # Hay que correrlo solo una vez (Ya corrido)
+        # Hay que correrlo solo una vez por dataset
         self.preprocessor.run()  
         self.preprocessor.create_scheme()  
 
@@ -139,9 +137,6 @@ class Tablon:
             self.conversation_history = self.conversation_history[-12:]
 
             print("Final sql: ", sql)
-
-            # if sql.lower() == "select 'not available';":
-            #     print("Sorry, I couldn't generate a valid SQL query for your question.")
 
             execution = self.executor.execute_query(sql)
 
@@ -170,6 +165,7 @@ class Tablon:
             self.conversation_history.append({"role": "assistant", "content": f'{execution["status"]}: error {execution["error"]}'})
             self.conversation_history = self.conversation_history[-12:]
 
+
     def answer_with_retries(self, question: str, max_retries: int = 3):
         self.conversation_history.append({"role": "user", "content": question})
         self.conversation_history = self.conversation_history[-12:]
@@ -183,9 +179,7 @@ class Tablon:
             self.conversation_history = self.conversation_history[-12:]
 
             print("sql: ", sql)
-            #print("undo_sql: ", undo_sql)
             execution = self.executor.execute_query(sql)
-            #print("result: ",execution)
             if execution["error"] == None:
                 self.preprocessor.log_db_action(sql, undo_sql)
             
@@ -196,14 +190,12 @@ class Tablon:
             attempt = 0
             while attempt < max_retries:
                 attempt += 1
-                #print(f"\n Intento {attempt}...")
 
                 sql = self.gen_SQL_service.generate_sql_with_embedded_variants(
                     question=question,
                     conversation=self.conversation_history[-12:]
                 )
 
-                #print(" SQL generada:", sql)
                 self.conversation_history.append({"role": "assistant", "content": sql})
                 self.conversation_history = self.conversation_history[-12:]
 
@@ -211,14 +203,12 @@ class Tablon:
                 rows = execution["sql"]
 
                 if execution["error"] is not None:
-                    #print("❌ Error al ejecutar la query:", execution["error"])
                     flag = False
                     break
                 if len(rows) > 0 and not ("'Not available'" in rows[0]):
                     flag = True
                     break
                 else:
-                    print("⚠️ La query no devolvió resultados.")
                     self.conversation_history.append({
                         "role": "user",
                         "content": "La última consulta SQL no devolvió resultados. Por favor, genera una consulta diferente que pueda recuperar datos."
@@ -237,7 +227,6 @@ class Tablon:
         resultados = self.evaluator.evaluar_modelo_sql(
             modelo_generador=self.gen_SQL_service)
         
-        # Imprime o devuelve los resultados de forma resumida o detallada
         avg_sim = sum(r["similitud"] for r in resultados) / len(resultados)
         print(f"Similitud promedio en iteración : {avg_sim:.2f}")
 

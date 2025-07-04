@@ -1,12 +1,10 @@
-import sqlite3
 import json
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from openai import AzureOpenAI
 import instructor
 import os
 from pydantic import BaseModel, Field
 import re
-import sqlglot
 from sqlglot import exp
 import difflib
 from tqdm import tqdm
@@ -157,12 +155,8 @@ class Evaluator:
                 'sql_generada': sql_generada,
                 'similitud': similitud
             })
-            # Mostrar comparación por consola
-            # print("\n---")
-            # print(f"🟢 Pregunta:      {pregunta}")
-            # print(f"✅ SQL esperada:  {sql_esperada}")
-            # print(f"🛠️  SQL generada: {sql_generada}")
-            # print(f"📊 Similitud:     {similitud:.2f}")
+
+
 
 
         return resultados
@@ -176,32 +170,7 @@ class Evaluator:
         plt.title("Distribución de Similitud entre SQL esperada y generada")
         plt.xlabel("Similitud")
         plt.ylabel("Cantidad de preguntas")
-        #plt.grid(True)
-        plt.show()
-
-        # Boxplot
-        plt.figure(figsize=(6, 4))
-        plt.boxplot(df["similitud"], vert=False)
-        plt.title("Boxplot de Similitud")
-        plt.xlabel("Similitud")
         plt.grid(True)
         plt.show()
 
-        # Scatter
-        plt.figure(figsize=(10, 5))
-        plt.scatter(range(len(df)), df["similitud"])
-        plt.title("Similitud por índice de pregunta")
-        plt.xlabel("Índice")
-        plt.ylabel("Similitud")
-        plt.grid(True)
-        plt.show()
-
-        # Casos problemáticos
-        peores = df.sort_values("similitud").head(5)
-        print("\n📉 PREGUNTAS CON MENOR SIMILITUD:")
-        for _, row in peores.iterrows():
-            print(f"\n❓ {row['pregunta']}")
-            print(f"✅ Esperada:  {row['sql_esperada']}")
-            print(f"🛠️ Generada: {row['sql_generada']}")
-            print(f"📊 Similitud: {row['similitud']:.2f}")
 

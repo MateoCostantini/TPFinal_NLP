@@ -30,7 +30,6 @@ class TableAnswerer:
             f"\n The SQL Query made was de following:\n {sql_query}"
             "The table will be provided for context. The structure will be clear, including column names and their values."
             "Answer the question in a clear, short, natural language answer, summarizing the table content. "
-            #"If possible, highlight key numbers, names, or insights."
             
         )
         user_prompt = (

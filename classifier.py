@@ -1,6 +1,6 @@
-from pydantic import BaseModel, ValidationError, Field
+from pydantic import BaseModel, Field
 import json
-from typing import Dict, List, Optional, Any, Literal
+from typing import Dict, Any, Literal
 from openai import AzureOpenAI
 import os
 import instructor

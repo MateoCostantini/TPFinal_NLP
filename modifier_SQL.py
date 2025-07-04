@@ -1,12 +1,9 @@
-import sqlite3
 import json
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 from openai import AzureOpenAI
 import instructor
 import os
 from pydantic import BaseModel, Field
-import re
-import sqlglot
 from sqlglot import exp
 
 
@@ -112,7 +109,6 @@ class SQLModifierModel:
             "\nBelow I will provide you with the tables and their relationships:\n\n" + schema_repr
         )
 
-        #if prev_error != None:
         user_question = (
             f"Request: {question}\n\n"
             "Return only the corresponding SQL query (without explanations)."

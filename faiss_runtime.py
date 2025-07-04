@@ -23,7 +23,6 @@ class SQLiteFAISSRuntime:
         with open(os.path.join(self.DB_folder, "inverted_index.pkl"), "rb") as f:
             self.inverted_index = pickle.load(f)
 
-        # Azure config
         azure_client = AzureOpenAI(
             api_key=azure_api_key,
             api_version=azure_api_version,
@@ -48,7 +47,7 @@ class SQLiteFAISSRuntime:
 
 
 
-    def search(self, word: str, table: str, column: str, k: int = 5, threshold: float = 0.65 ): #-> List[Tuple[str, float, Tuple[str, str, str]]]:
+    def search(self, word: str, table: str, column: str, k: int = 5, threshold: float = 0.65 ): 
         """
         Busca en la columna especificada los embeddings más parecidos
         a la palabra dada, devolviendo tupla (word, similarity, (tabla, columna, texto_original)).
