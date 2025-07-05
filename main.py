@@ -234,17 +234,6 @@ class Tablon:
 
 
 
-
-
-##### Ver caso de que la tabla sea excesivamente larga y haya qeu recortarla.
-##### ver que modelo es mejor para cada una de las partes.
-##### ver si el preprocesamiento lo puede hacer en gpu.
-#### dirigir el pipeline segun corresponda. (not available, status: error, tabla vacia, etc.)
-##### en vez de que el que elige la mejor query reescriba la query podria capaz elegir el indice de la mejor y despues la agarro [indice]
-#### habria que actualizar el esquema cunado el modificador realiza un cambio.
-
-
-
 def main():
     parser = argparse.ArgumentParser(description="Inspección de esquema de base SQLite y evaluación del modelo.")
     parser.add_argument("--db", help="Ruta al archivo .db de entrada (obligatorio si no se usa --eval)")
@@ -257,29 +246,16 @@ def main():
         print(" Ejecutando evaluación...")
         tablon = Tablon(
             db_path="database\evaluator\sakila_master.db",  # ruta fija para evaluación
-            azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-            azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
-            azure_api_version_embeddings="2023-12-01-preview",
-            deployment_embeddings="text-embedding-3-small-tablon",
-            azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-            azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-            azure_api_version_model="2023-12-01-preview",
-            deployment_model="gpt-4o-mini-tute",
+            azure_api_key_embeddings="...",
+            azure_api_endpoint_embeddings="...",
+            azure_api_version_embeddings="...",
+            deployment_embeddings="...",
+            azure_api_key_model="...",
+            azure_api_endpoint_model="...",
+            azure_api_version_model="...",
+            deployment_model="...",
             preprocess=False  # no se requiere preprocesamiento en evaluación
         )
-        # tablon = Tablon(
-        #     db_path="database/evaluator/sakila_master.db",  # ruta fija para evaluación
-        #     azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-        #     azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
-        #     azure_api_version_embeddings="2023-12-01-preview",
-        #     deployment_embeddings="text-embedding-3-small-tablon",
-        #     azure_api_key_model="7GhJHYyu4vRqgfF9KXArM46BTvfQy2eMF6emctkOZvjc91ZeMq1uJQQJ99BGACHYHv6XJ3w3AAABACOGIAj7",
-        #     azure_api_endpoint_model="https://glewit-openai-2.openai.azure.com/",
-        #     azure_api_version_model="2024-12-01-preview",
-        #     deployment_model="gpt-4o-glewit",
-        #     preprocess=False  # no se requiere preprocesamiento en evaluación
-        # )
-
         tablon.evaluate()
 
     else:
@@ -289,14 +265,14 @@ def main():
         print(f" Ejecutando sistema en modo interactivo con base: {args.db}")
         tablon = Tablon(
             db_path=args.db,
-            azure_api_key_embeddings="CmzNoGQRpdysAdiAVniDBG7PDJvup7GvjWdolgOpdLe6FNotvVWMJQQJ99BFACYeBjFXJ3w3AAABACOGUZRT",
-            azure_api_endpoint_embeddings="https://mateo-openai.openai.azure.com/",
-            azure_api_version_embeddings="2023-12-01-preview",
-            deployment_embeddings="text-embedding-3-small-tablon",
-            azure_api_key_model="5gENmcyHfZ6TrGM6ictkRXzD8IL75KijInGCjGbq7IqgEilgdpeyJQQJ99BFACfhMk5XJ3w3AAAAACOGVBGv",
-            azure_api_endpoint_model="https://mateo-mbio42gi-swedencentral.cognitiveservices.azure.com/",
-            azure_api_version_model="2023-12-01-preview",
-            deployment_model="gpt-4o-mini-tute",
+            azure_api_key_embeddings="...",
+            azure_api_endpoint_embeddings="...",
+            azure_api_version_embeddings="...",
+            deployment_embeddings="...",
+            azure_api_key_model="...",
+            azure_api_endpoint_model="...",
+            azure_api_version_model="...",
+            deployment_model="...",
             preprocess=args.preprocess
         )
 
