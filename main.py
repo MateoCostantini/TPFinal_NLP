@@ -226,11 +226,11 @@ def main():
             azure_api_key_embeddings="...",
             azure_api_endpoint_embeddings="...",
             azure_api_version_embeddings="...",
-            deployment_embeddings="...",
+            deployment_embeddings="text-embedding-3-small",
             azure_api_key_model="...",
             azure_api_endpoint_model="...",
             azure_api_version_model="...",
-            deployment_model="...",
+            deployment_model="gpt-4o-mini",
             preprocess=args.preprocess
         )
 
