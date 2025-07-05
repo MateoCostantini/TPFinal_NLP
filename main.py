@@ -121,49 +121,7 @@ class Tablon:
         self.preprocessor.run()  
         self.preprocessor.create_scheme()  
 
-    def answer(self, question):
-        self.conversation_history.append({"role": "user", "content": question})
-        self.conversation_history = self.conversation_history[-12:]  
-        # 1. Clasificar la consulta
-        category = self.classifier_service.classify_query(question)
-
-        if category == "observes_database":
-            sql = self.gen_SQL_service.generate_sql_with_embedded_variants(
-                question=question,
-                conversation = self.conversation_history[-12:]
-                )
-
-            self.conversation_history.append({"role": "assistant", "content": sql})
-            self.conversation_history = self.conversation_history[-12:]
-
-            print("Final sql: ", sql)
-
-            execution = self.executor.execute_query(sql)
-
-            tabla = execution['sql']
-            print(tabla)
-
-            resp = self.answerer.answer(question, sql, tabla)
-            print("Answer: ", resp)
-            self.conversation_history.append({"role": "assistant", "content": resp})
-            self.conversation_history = self.conversation_history[-12:]
-
-
-        elif category == "modifies_database":
-            sql, undo_sql = self.modifier_SQL_service.generate_sql(question)
-
-            self.conversation_history.append({"role": "assistant", "content": sql})
-            self.conversation_history = self.conversation_history[-12:]
-
-            print("sql: ", sql)
-            print("undo_sql: ", undo_sql)
-            execution = self.executor.execute_query(sql)
-            print("result: ",execution)
-            if execution["error"] == None:
-                self.preprocessor.log_db_action(sql, undo_sql)
-            
-            self.conversation_history.append({"role": "assistant", "content": f'{execution["status"]}: error {execution["error"]}'})
-            self.conversation_history = self.conversation_history[-12:]
+    
 
 
     def answer_with_retries(self, question: str, max_retries: int = 3):
